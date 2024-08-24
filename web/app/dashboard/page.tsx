@@ -1,8 +1,8 @@
-import { Gift, Stamp } from "lucide-react";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
 import prisma from "@/lib/prisma";
+import TransactionCard from "./_components/transaction-charts";
 
 async function shouldRedirectToOnboarding(userId: string) {
   const merchant = await prisma.merchant.findFirst({
@@ -16,32 +16,13 @@ async function shouldRedirectToOnboarding(userId: string) {
 
 const page = async () => {
   const { userId } = auth();
-  (await shouldRedirectToOnboarding(userId!)) && redirect("/dashboard/onboarding");
+  // (await shouldRedirectToOnboarding(userId!)) && redirect("/dashboard/onboarding");
 
   return (
     <div className="p-14 px-40">
-      <h1 className="text-4xl">Choose a rewards program</h1>
-      <h3 className="text-2xl text-gray-600/80">Pick one from our templates</h3>
-
-      <div className="mt-10 grid grid-cols-3 gap-x-6">
-        <div className="cursor-pointer rounded-lg border border-gray-500 p-6 shadow-md transition-all duration-150 hover:border-green-400 hover:bg-black/95">
-          <Gift className="mb-4 h-12 w-12" />
-          <h3 className="text-2xl">Buy X, Get 1 Free</h3>
-          <p className="mt-2 text-gray-400">
-            The classic coffee stamp reward. Treat your repeat customers with a freebie
-            after every X purchases.
-          </p>
-        </div>
-
-        <div className="cursor-pointer rounded-lg border border-gray-500 p-6 shadow-md transition-all duration-150 hover:border-green-400 hover:bg-black/95">
-          <Stamp className="mb-4 h-12 w-12" />
-          <h3 className="text-2xl">Points program</h3>
-          <p className="mt-2 text-gray-400">
-            Reward loyal customers with points for each purchase. You can add more prizes
-            over time, and based on the level of loyalty.
-          </p>
-        </div>
-      </div>
+      <h2 className="text-3xl">Hello, Mehul Srivastava 👋</h2>
+      <h4 className="text-xl text-gray-500">Welcome to so.loyal!</h4>
+      <TransactionCard />
     </div>
   );
 };

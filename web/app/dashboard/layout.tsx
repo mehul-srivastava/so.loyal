@@ -1,16 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 import Logo from "@/components/Logo";
+import { User } from "@clerk/nextjs/server";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUser();
+
   return (
     <div className="h-full bg-black/95 text-white">
-      <nav className="fixed flex h-20 w-full items-center justify-between border-b border-slate-700 px-16 py-6">
+      <nav className="fixed flex h-20 w-full items-center z-50 justify-between bg-black/95 border-b border-slate-700 px-16 py-6">
         <Link href="/dashboard">
           <Logo className="w-8" />
         </Link>
@@ -24,7 +26,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
           </div>
         )}
       </nav>
-      <div className="pt-20">{children}</div>
+      <div className="pt-20 bg-black/95">{children}</div>
     </div>
   );
 };
