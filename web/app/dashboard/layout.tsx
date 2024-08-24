@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 import Logo from "@/components/Logo";
-import { User } from "@clerk/nextjs/server";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUser();
@@ -26,7 +24,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
           </div>
         )}
       </nav>
-      <div className="pt-20 bg-black/95">{children}</div>
+      <div className="pt-20 bg-black/95 min-h-screen">{children}</div>
     </div>
   );
 };
