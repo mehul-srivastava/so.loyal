@@ -11,8 +11,8 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUser();
 
   return (
-    <div className="h-full bg-black/95 text-white">
-      <nav className="fixed flex h-20 w-full items-center z-50 justify-between bg-black/95 border-b border-slate-700 px-16 py-6">
+    <div className="h-full text-white">
+      <nav className="fixed flex h-20 w-full items-center z-50 justify-between bg-black border-b border-slate-700 px-16 py-6">
         <Link href="/dashboard">
           <Logo className="w-8" />
         </Link>
