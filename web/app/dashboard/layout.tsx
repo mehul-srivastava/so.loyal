@@ -1,6 +1,9 @@
 "use client";
+
 import React from "react";
-import { SignedIn, UserButton, useUser } from "@clerk/nextjs";
+import Link from "next/link";
+import { UserButton, useUser } from "@clerk/nextjs";
+
 import Logo from "@/components/Logo";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
@@ -8,7 +11,9 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="h-full bg-black/95 text-white">
       <nav className="fixed flex h-20 w-full items-center justify-between border-b border-slate-700 px-16 py-6">
-        <Logo className="w-8" />
+        <Link href="/dashboard">
+          <Logo className="w-8" />
+        </Link>
         {!!user?.fullName && (
           <div className="flex items-center gap-x-4">
             <UserButton />

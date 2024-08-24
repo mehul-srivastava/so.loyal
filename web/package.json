@@ -3,17 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.3.1",
+    "@clerk/nextjs": "^5.3.3",
+    "@hookform/resolvers": "^3.9.0",
+    "@prisma/client": "^5.18.0",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "axios": "^1.7.5",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.435.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "shadcn-ui": "^0.8.0"
+    "react-hook-form": "^7.52.2",
+    "react-hot-toast": "^2.4.1",
+    "shadcn-ui": "^0.8.0",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -24,6 +37,7 @@
     "postcss": "^8",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
+    "prisma": "^5.18.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
