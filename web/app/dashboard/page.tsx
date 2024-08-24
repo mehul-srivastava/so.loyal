@@ -1,6 +1,23 @@
 import { Gift, Stamp } from "lucide-react";
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 
-const page = () => {
+import prisma from "@/lib/prisma";
+
+async function shouldRedirectToOnboarding(userId: string) {
+  const merchant = await prisma.merchant.findFirst({
+    where: {
+      id: userId,
+    },
+  });
+
+  return !merchant;
+}
+
+const page = async () => {
+  const { userId } = auth();
+  (await shouldRedirectToOnboarding(userId!)) && redirect("/dashboard/onboarding");
+
   return (
     <div className="p-14 px-40">
       <h1 className="text-4xl">Choose a rewards program</h1>
@@ -11,8 +28,8 @@ const page = () => {
           <Gift className="mb-4 h-12 w-12" />
           <h3 className="text-2xl">Buy X, Get 1 Free</h3>
           <p className="mt-2 text-gray-400">
-            The classic coffee stamp reward. Treat your repeat customers with a
-            freebie after every X purchases.
+            The classic coffee stamp reward. Treat your repeat customers with a freebie
+            after every X purchases.
           </p>
         </div>
 
@@ -20,8 +37,8 @@ const page = () => {
           <Stamp className="mb-4 h-12 w-12" />
           <h3 className="text-2xl">Points program</h3>
           <p className="mt-2 text-gray-400">
-            Reward loyal customers with points for each purchase. You can add
-            more prizes over time, and based on the level of loyalty.
+            Reward loyal customers with points for each purchase. You can add more prizes
+            over time, and based on the level of loyalty.
           </p>
         </div>
       </div>
