@@ -5,8 +5,8 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-pages = "FfBbewrAkpAP7HfDBL4zPrubA8F28xZiaL612HLHzjZd"
-stamps = "BG5jXZkjdu5zJjDZvncLBRi1LNBVo23Q8W1uxBCiMAn9"
+pages = "Due8TAGvBMeKWY8XaFXVnLgQZj5FdVbKUVUrWDyQU2ye"
+stamps = "Bq879qyHmwZ7GWmz1FZBaKqwvH6iiSpzAJjYZuKFYKuz"
 
 [registry]
 url = "https://api.apr.dev"
