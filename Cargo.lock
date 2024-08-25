@@ -1513,7 +1513,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "soloyal"
+name = "stamps"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",

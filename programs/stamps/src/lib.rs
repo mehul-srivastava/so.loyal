@@ -1,9 +1,10 @@
 use anchor_lang::prelude::*;
 
-declare_id!("4qmPQ9rGYEC5HNTotXfHC2xNs87UfesJX3KQEfVaRaUm");
+declare_id!("BG5jXZkjdu5zJjDZvncLBRi1LNBVo23Q8W1uxBCiMAn9");
+
 
 #[program]
-pub mod soloyal {
+pub mod stamps {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {

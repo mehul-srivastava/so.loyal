@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-soloyal = "4qmPQ9rGYEC5HNTotXfHC2xNs87UfesJX3KQEfVaRaUm"
+stamps = "BG5jXZkjdu5zJjDZvncLBRi1LNBVo23Q8W1uxBCiMAn9"
 
 [registry]
 url = "https://api.apr.dev"
