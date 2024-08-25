@@ -1,7 +1,7 @@
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import OnboardingForm from "./_components/onboarding-form";
-import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 
 async function shouldRedirectToDashboard(userId: string) {
@@ -16,7 +16,12 @@ async function shouldRedirectToDashboard(userId: string) {
 
 const page = async () => {
   const { userId } = auth();
-  (await shouldRedirectToDashboard(userId!)) && redirect("/dashboard");
+
+  if (!userId) {
+    return redirect("/");
+  }
+
+  (await shouldRedirectToDashboard(userId)) && redirect("/dashboard");
 
   return (
     <div className="p-14 px-40 h-full">

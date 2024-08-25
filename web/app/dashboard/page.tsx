@@ -1,10 +1,10 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
 import prisma from "@/lib/prisma";
 import TransactionCard from "./_components/transaction-charts";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 async function shouldRedirectToOnboarding(userId: string) {
   const merchant = await prisma.merchant.findFirst({
@@ -18,7 +18,12 @@ async function shouldRedirectToOnboarding(userId: string) {
 
 const page = async () => {
   const { userId } = auth();
-  (await shouldRedirectToOnboarding(userId!)) && redirect("/dashboard/onboarding");
+
+  if (!userId) {
+    return redirect("/");
+  }
+
+  (await shouldRedirectToOnboarding(userId)) && redirect("/dashboard/onboarding");
 
   return (
     <div className="p-14 px-40">
