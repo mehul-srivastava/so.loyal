@@ -5,6 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
+pages = "FfBbewrAkpAP7HfDBL4zPrubA8F28xZiaL612HLHzjZd"
 stamps = "BG5jXZkjdu5zJjDZvncLBRi1LNBVo23Q8W1uxBCiMAn9"
 
 [registry]
