@@ -8,11 +8,15 @@ skip-lint = false
 points_page = "7ibPg4fmTEjLufBX4vFUK2ZsG9emD5bGLqnZmfFayKGx"
 stamps_page = "CpPqrUDwBuh7HJCPfqMEg9VeVnnuiqvQnsGfZSbuc48y"
 
+[programs.devnet]
+points_page = "7ibPg4fmTEjLufBX4vFUK2ZsG9emD5bGLqnZmfFayKGx"
+stamps_page = "CpPqrUDwBuh7HJCPfqMEg9VeVnnuiqvQnsGfZSbuc48y"
+
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "/Users/mehulsrivastava/.config/solana/id.json"
 
 [scripts]
