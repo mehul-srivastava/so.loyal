@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useContext, useState } from "react";
-import { LoaderIcon } from "react-hot-toast";
-import { Keypair } from "@solana/web3.js";
+import toast, { LoaderIcon } from "react-hot-toast";
+import { Keypair, SystemProgram } from "@solana/web3.js";
+import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
 
 import {
   Dialog,
@@ -20,6 +21,7 @@ import {
   type IPaymentPageDataContext,
   PaymentPageDataContext,
 } from "@/components/providers/payment-page-context-provider";
+import { getStampsProgram } from "@/anchor/stamps/setup";
 
 const PublishButton = () => {
   const [loading, setLoading] = useState(false);
@@ -31,14 +33,41 @@ const PublishButton = () => {
     appendData({ [e.target.name]: e.target.value });
   }
 
-  function handleClick() {
-    // first create a keypair
-    const account = new Keypair();
+  const wallet = useAnchorWallet();
+  const { publicKey } = useWallet();
 
-    // save info to db with public key
+  async function handleClick() {
+    setLoading(true);
+    try {
+      const account = new Keypair(); // #1: This is the account owner for this payment page, you must save its pubkey in database
+      const program = getStampsProgram(wallet!); // #2: This is the program object which contains all the methods
 
-    // save data on chain
-    // redirect to view page
+      const txn = await program.methods
+        .initializePage(
+          data.title!,
+          data.description!,
+          data.price!,
+          data.stamp_count!,
+          "google.com/image",
+        )
+        .accounts({
+          pageAccount: account.publicKey, // #3: Page account is basically the owner of this payment page as mentioned in #1
+          user: publicKey!, // #4: Use wallet's public key because the end-user is going to pay the gas fee
+          systemProgram: SystemProgram.programId, // #5: Ignore!
+        })
+        .signers([account])
+        .rpc();
+
+      toast.success(txn);
+
+      // save info to db with public key
+
+      // save data on chain
+      // redirect to view page
+    } catch (error) {
+      toast.error("Something went wrong!");
+      setLoading(false);
+    }
   }
 
   return (
