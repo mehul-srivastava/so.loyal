@@ -24,4 +24,15 @@ model Merchant {
   brandImage          String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  Pages               Page[]   @relation("Page")
+}
+
+model Page {
+  id               String @id
+  merchantId       String
+  programPublicKey String
+
+  merchant Merchant @relation("Page", fields: [merchantId], references: [id])
+
+  @@index([merchantId], name: "merchantId_fk")
 }
