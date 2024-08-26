@@ -5,7 +5,8 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-payment_page_stamps = "4jVkFiF35erAvhSUCKWqt7VpLZD7LdqGMJyMkkHvhyP2"
+points_page = "7ibPg4fmTEjLufBX4vFUK2ZsG9emD5bGLqnZmfFayKGx"
+stamps_page = "CpPqrUDwBuh7HJCPfqMEg9VeVnnuiqvQnsGfZSbuc48y"
 
 [registry]
 url = "https://api.apr.dev"
