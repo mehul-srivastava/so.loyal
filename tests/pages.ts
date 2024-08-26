@@ -1,49 +1,50 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Pages } from "../target/types/pages";
-import { Keypair } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 describe("pages", () => {
-  // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
   const program = anchor.workspace.Pages as Program<Pages>;
-
-  // Generate a new keypair to use as the address the counter account
-  const counterAccount = new Keypair();
+  const pagesAccount = new Keypair(); // my understanding: these keypair are for particular blocks in the blockchain, you must store the public key to make edits to it
 
   it("Is initialized!", async () => {
-    // Invoke the initialize instruction
-    const transactionSignature = await program.methods
-      .initialize()
+    await program.methods
+      .initializePage(
+        "Cohort 2.0",
+        "Best in class course",
+        20.12,
+        "stamp",
+        "google.com/image"
+      )
       .accounts({
-        pages: counterAccount.publicKey,
+        pages: pagesAccount.publicKey,
       })
-      .signers([counterAccount]) // include counter keypair as additional signer
+      .signers([pagesAccount])
       .rpc({ skipPreflight: true });
 
-    // Fetch the counter account data
-    const accountData = await program.account.pages.fetch(counterAccount.publicKey);
-
-    console.log(`Transaction Signature: ${transactionSignature}`);
-    console.log(`Title: ${accountData.title}`);
+    const accountData = await program.account.pages.fetch(pagesAccount.publicKey);
+    console.table(accountData);
+    console.log("pubkey", pagesAccount.publicKey);
   });
 
-  it("Increment", async () => {
-    const title = "MY TITLE MEHUL";
-    // Invoke the increment instruction
-    const transactionSignature = await program.methods
-      .increment(title)
+  it("Has updated!", async () => {
+    let updatedTitle = "Updated cohort 2.0";
+    let updatedDescription = "Updated description";
+    let updatedPrice = 5.99;
+    let updatedImage = "jstseguru.in/image";
+
+    await program.methods
+      .updatePage(updatedTitle, updatedDescription, updatedPrice, updatedImage)
       .accounts({
-        pages: counterAccount.publicKey,
+        pages: pagesAccount.publicKey,
       })
       .rpc();
 
-    // Fetch the counter account data
-    const accountData = await program.account.pages.fetch(counterAccount.publicKey);
-
-    console.log(`Transaction Signature: ${transactionSignature}`);
-    console.log(`Title: ${accountData.title}`);
+    const accountData = await program.account.pages.fetch(pagesAccount.publicKey);
+    console.table(accountData);
+    console.log("pubkey", pagesAccount.publicKey);
   });
 });
