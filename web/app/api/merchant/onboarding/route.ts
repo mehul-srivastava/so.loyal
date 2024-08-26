@@ -21,7 +21,12 @@ export async function POST(request: NextRequest) {
 
     const merchant = await prisma.merchant.findFirst({
       where: {
-        OR: [{ supportPhone }, { websiteLink }, { websiteName }, { id: userId }],
+        OR: [
+          { supportPhone },
+          { websiteLink },
+          { websiteName },
+          { id: userId },
+        ],
       },
     });
 

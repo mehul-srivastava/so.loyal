@@ -3,11 +3,11 @@
 import { createContext, useState } from "react";
 
 type IPaymentPageData = {
-  title?: String;
-  description?: String;
-  price?: Number;
-  stamp_count?: Number;
-  slug?: String;
+  title?: string;
+  description?: string;
+  price?: number;
+  stamp_count?: number;
+  slug?: string;
 };
 
 export type IPaymentPageDataContext = {
