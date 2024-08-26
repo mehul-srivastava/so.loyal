@@ -37,7 +37,7 @@ const page = async ({
           style={borderStyles}
         />
 
-        <PublishButton />
+        <PublishButton searchParams={searchParams} />
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-6 px-6 py-6 md:grid-cols-2 lg:gap-36">
           <div className="md:no-scrollbar grid items-center justify-center gap-4 md:h-[90vh] md:gap-10 md:overflow-auto">

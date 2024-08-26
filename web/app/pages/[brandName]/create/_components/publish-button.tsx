@@ -1,9 +1,11 @@
 "use client";
 
+import axios from "axios";
 import React, { useContext, useState } from "react";
 import toast, { LoaderIcon } from "react-hot-toast";
 import { Keypair, SystemProgram } from "@solana/web3.js";
 import { useAnchorWallet, useWallet } from "@solana/wallet-adapter-react";
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -23,7 +25,11 @@ import {
 } from "@/components/providers/payment-page-context-provider";
 import { getStampsProgram } from "@/anchor/stamps/setup";
 
-const PublishButton = () => {
+const PublishButton = ({
+  searchParams,
+}: {
+  searchParams?: { type: string };
+}) => {
   const [loading, setLoading] = useState(false);
   const { data, appendData } = useContext(
     PaymentPageDataContext,
@@ -33,39 +39,53 @@ const PublishButton = () => {
     appendData({ [e.target.name]: e.target.value });
   }
 
+  const router = useRouter();
   const wallet = useAnchorWallet();
   const { publicKey } = useWallet();
+
+  const putStampsOnChain = async () => {
+    const account = new Keypair(); // #1: This is the account owner for this payment page, you must save its pubkey in database
+    const program = getStampsProgram(wallet!); // #2: This is the program object which contains all the methods
+
+    const txnSignature = await program.methods
+      .initializePage(
+        data.title!,
+        data.description!,
+        data.price!,
+        data.stamp_count!,
+        "google.com/image",
+      )
+      .accounts({
+        pageAccount: account.publicKey, // #3: Page account is basically the owner of this payment page as mentioned in #1
+        user: publicKey!, // #4: Use wallet's public key because the end-user is going to pay the gas fee
+        systemProgram: SystemProgram.programId, // #5: Ignore!
+      })
+      .signers([account])
+      .rpc();
+
+    console.log(
+      `View transaction on https://solana.fm/tx/${txnSignature}?cluster=devnet-alpha`,
+    );
+
+    return account.publicKey.toString();
+  };
 
   async function handleClick() {
     setLoading(true);
     try {
-      const account = new Keypair(); // #1: This is the account owner for this payment page, you must save its pubkey in database
-      const program = getStampsProgram(wallet!); // #2: This is the program object which contains all the methods
+      if (!!searchParams?.type && searchParams.type === "stamp") {
+        const accountPublicKey = await putStampsOnChain();
+        await axios.post("/api/merchant/pages", {
+          slug: data.slug!,
+          accountPublicKey,
+        });
+      }
 
-      const txn = await program.methods
-        .initializePage(
-          data.title!,
-          data.description!,
-          data.price!,
-          data.stamp_count!,
-          "google.com/image",
-        )
-        .accounts({
-          pageAccount: account.publicKey, // #3: Page account is basically the owner of this payment page as mentioned in #1
-          user: publicKey!, // #4: Use wallet's public key because the end-user is going to pay the gas fee
-          systemProgram: SystemProgram.programId, // #5: Ignore!
-        })
-        .signers([account])
-        .rpc();
-
-      toast.success(txn);
-
-      // save info to db with public key
-
-      // save data on chain
-      // redirect to view page
+      toast.success("Page has been published!");
+      router.push("/dashboard");
     } catch (error) {
       toast.error("Something went wrong!");
+    } finally {
       setLoading(false);
     }
   }

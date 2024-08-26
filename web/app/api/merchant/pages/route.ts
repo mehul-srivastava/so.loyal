@@ -8,21 +8,21 @@ export async function POST(request: NextRequest) {
   try {
     const { userId } = auth();
 
-    const { slug, account } = await request.json();
+    const { slug, accountPublicKey } = await request.json();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const page = await prisma.pages.create({
+    await prisma.pages.create({
       data: {
         id: slug,
         merchantId: userId,
-        programPublicKey: account.publicKey.toString(),
+        programPublicKey: accountPublicKey,
       },
     });
 
-    return NextResponse.json({ programAccount: account });
+    return NextResponse.json({});
   } catch (error) {
     console.log("[PAYMENT PAGES]", error);
     return new NextResponse("Internal error", { status: 500 });
