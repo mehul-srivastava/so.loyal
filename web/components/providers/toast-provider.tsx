@@ -1,5 +1,5 @@
 import { Toaster } from "react-hot-toast";
 
-export const ToastProvider = () => {
+export default function ToastProvider() {
   return <Toaster />;
-};
+}

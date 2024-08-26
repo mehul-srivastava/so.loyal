@@ -3,7 +3,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Poppins } from "next/font/google";
 
 import "./globals.css";
-import { ToastProvider } from "@/components/providers/toast-provider";
+import ToastProvider from "@/components/providers/toast-provider";
+import Web3WalletProvider from "@/components/providers/web3-wallet-provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -22,12 +23,14 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={poppins.className}>
-          <ToastProvider />
-          {children}
-        </body>
-      </html>
+      <Web3WalletProvider>
+        <html lang="en">
+          <body className={poppins.className}>
+            <ToastProvider />
+            {children}
+          </body>
+        </html>
+      </Web3WalletProvider>
     </ClerkProvider>
   );
 }
