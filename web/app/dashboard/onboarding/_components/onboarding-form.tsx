@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast, { LoaderIcon } from "react-hot-toast";
+import { useWallet } from "@solana/wallet-adapter-react";
 import axios from "axios";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { Web3WalletButton } from "@/components/ConnectWalletButton";
 
 export const formSchema = z.object({
   websiteName: z
@@ -41,6 +43,8 @@ export const formSchema = z.object({
 const OnboardingForm = () => {
   const router = useRouter();
 
+  const { publicKey, connected, connecting } = useWallet();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,7 +53,7 @@ const OnboardingForm = () => {
       brandColor: "#28ef34",
       supportEmail: "",
       supportPhone: "",
-      walletPublicAddress: "",
+      walletPublicAddress: connected ? publicKey!.toString() : "",
     },
   });
 
@@ -131,7 +135,9 @@ const OnboardingForm = () => {
             name="walletPublicAddress"
             render={({ field }) => (
               <FormItem className="col-span-12">
-                <FormLabel>Wallet's Public Address</FormLabel>
+                <FormLabel>
+                  Wallet's Public Address <small>(Connect a devnet wallet)</small>
+                </FormLabel>
                 <FormControl>
                   <Input
                     autoComplete="off"
@@ -139,8 +145,27 @@ const OnboardingForm = () => {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  What is the public address of your wallet for receiving payments?
+                <FormDescription className="!mt-0">
+                  {connecting && "Loading..."}
+                  {!connected && (
+                    <Web3WalletButton action="connect" text="Show Wallets" />
+                  )}
+                  {connected && (
+                    <div className="flex gap-x-4">
+                      <Button
+                        variant="link"
+                        className="text-white px-0 font-normal text-xs"
+                        onClick={(event) => field.onChange(publicKey?.toString())}
+                      >
+                        Paste
+                      </Button>
+                      <Web3WalletButton
+                        action="disconnect"
+                        text="Disconnect Wallet"
+                        onClickFn={() => field.onChange("")}
+                      />
+                    </div>
+                  )}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
