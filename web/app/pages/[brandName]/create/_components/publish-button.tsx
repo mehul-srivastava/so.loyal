@@ -27,7 +27,9 @@ import { getStampsProgram } from "@/anchor/stamps/setup";
 
 const PublishButton = ({
   searchParams,
+  params,
 }: {
+  params: { brandName: string };
   searchParams?: { type: string };
 }) => {
   const [loading, setLoading] = useState(false);
@@ -82,7 +84,7 @@ const PublishButton = ({
       }
 
       toast.success("Page has been published!");
-      router.push("/dashboard");
+      router.push(`/pages/${params.brandName}/${data.slug!}`);
     } catch (error) {
       toast.error("Something went wrong!");
     } finally {
@@ -118,7 +120,7 @@ const PublishButton = ({
           </Label>
           <div className="flex">
             <span className="inline-flex items-center rounded-md rounded-e-none border border-e-0 border-gray-300 bg-gray-100 px-3 text-sm">
-              /100xdevs
+              /{params.brandName}/
             </span>
             <Input
               name="slug"
