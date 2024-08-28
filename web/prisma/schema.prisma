@@ -28,11 +28,27 @@ model Merchant {
 }
 
 model Page {
-  id               String @id
+  id               String   @id
   merchantId       String
   programPublicKey String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  Orders           Order[]  @relation("Order")
 
   merchant Merchant @relation("Page", fields: [merchantId], references: [id])
 
   @@index([merchantId], name: "merchantId_fk")
+}
+
+model Order {
+  id                Int      @id @default(autoincrement())
+  merchantId        String
+  pageId            String
+  customerPublicKey String
+  orderPublicKey    String
+  amount            Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  page Page @relation("Order", fields: [pageId], references: [id])
 }
