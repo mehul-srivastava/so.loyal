@@ -6,7 +6,7 @@ import { StampsSetup, StampsCard } from "./_components/stamps-reward";
 import PublishButton from "./_components/publish-button";
 import ProductDetailSetup from "./_components/product-detail";
 import PaymentPageDataProvider from "@/components/providers/payment-page-context-provider";
-import TransactionSummarySetup from "./_components/transaction-summary-setup";
+import TransactionSummarySetup from "./_components/transaction-summary";
 
 const page = async ({
   params,

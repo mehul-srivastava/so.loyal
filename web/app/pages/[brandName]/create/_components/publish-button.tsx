@@ -55,7 +55,7 @@ const PublishButton = ({
         data.description!,
         data.price!,
         data.stamp_count!,
-        "google.com/image",
+        "https://img.freepik.com/free-photo/delicious-coffee-beans-cup_23-2150691429.jpg",
       )
       .accounts({
         pageAccount: account.publicKey, // #3: Page account is basically the owner of this payment page as mentioned in #1
