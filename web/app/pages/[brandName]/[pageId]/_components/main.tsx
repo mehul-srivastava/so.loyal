@@ -1,8 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { PublicKey } from "@solana/web3.js";
-import { useAnchorWallet } from "@solana/wallet-adapter-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
+import { findReference, FindReferenceError } from "@solana/pay";
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
 
 import {
   Card,
@@ -15,6 +20,9 @@ import { Button } from "@/components/ui/button";
 import { Loader2Icon, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { getStampsProgram } from "@/anchor/stamps/setup";
+import { ConnectThirdPartyWalletButton } from "@/components/ConnectWalletButton";
+import axios from "axios";
+import { LoaderIcon } from "react-hot-toast";
 
 type MainProps = {
   merchant: {
@@ -45,21 +53,101 @@ interface IPageData {
   image: string;
 }
 
+const STATUS = {
+  Initial: "Initial",
+  Submitted: "Submitted",
+  Paid: "Paid",
+};
+
 const Main = ({ merchant, page, params }: MainProps) => {
-  const wallet = useAnchorWallet();
   const [data, setData] = useState<IPageData>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(STATUS.Initial);
+
+  const anchorWallet = useAnchorWallet();
+  const customerWallet = useWallet();
+  const { connection } = useConnection();
+
+  const orderId = useMemo(() => Keypair.generate().publicKey, []);
+  const order = useMemo(
+    () => ({
+      buyerAddress: customerWallet.publicKey?.toString(),
+      orderId: orderId.toString(),
+      price: Number(data?.price.toFixed(2)!),
+      sellerAddress: merchant?.walletPublicAddress,
+    }),
+    [customerWallet.publicKey, orderId, data],
+  );
 
   const fetchOnchainData = async () => {
-    const program = getStampsProgram(wallet!); // #2: This is the program object which contains all the methods
+    const program = getStampsProgram(anchorWallet!); // #2: This is the program object which contains all the methods
     const publicKey = new PublicKey(page?.programPublicKey!);
 
     const data = await program.account.stampsPage.fetch(publicKey);
     setData(data);
   };
 
+  const processTransaction = async () => {
+    setIsLoading(true);
+    const txResponse = await axios.post("/api/customer/transaction", order);
+    const txData = txResponse.data;
+
+    const tx = Transaction.from(Buffer.from(txData.transaction, "base64"));
+    console.log("Tx data is", tx);
+
+    try {
+      const txHash = await customerWallet.sendTransaction(tx, connection);
+      console.log(
+        `Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`,
+      );
+      setPaymentStatus(STATUS.Submitted);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchOnchainData();
   }, []);
+
+  useEffect(() => {
+    if (paymentStatus === STATUS.Submitted) {
+      setIsLoading(true);
+      const interval = setInterval(async () => {
+        try {
+          const result = await findReference(connection, orderId);
+          console.log("Finding tx reference", result.confirmationStatus);
+          if (
+            result.confirmationStatus === "confirmed" ||
+            result.confirmationStatus === "finalized"
+          ) {
+            clearInterval(interval);
+            setPaymentStatus(STATUS.Paid);
+            setIsLoading(false);
+            await axios.post("/api/customer/confirmation", {
+              buyerAddress: order.buyerAddress,
+              merchantId: merchant?.id,
+              price: order.price,
+              orderId: order.orderId,
+            });
+            alert("Thank you for your purchase!");
+          }
+        } catch (e) {
+          if (e instanceof FindReferenceError) {
+            return null;
+          }
+          console.error("Unknown error", e);
+        } finally {
+          setIsLoading(false);
+        }
+      }, 1000);
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [paymentStatus]);
 
   const borderStyles = { borderColor: merchant?.brandColor };
 
@@ -67,7 +155,20 @@ const Main = ({ merchant, page, params }: MainProps) => {
     return (
       <div className="grid place-items-center">
         <Loader2Icon className="h-28 w-28 animate-spin text-8xl font-thin" />
-        Fetching page from chain...
+        <p className="space mt-4 font-medium uppercase tracking-widest">
+          Fetching page from chain
+        </p>
+      </div>
+    );
+  }
+
+  if (!customerWallet.connected) {
+    return (
+      <div className="grid place-items-center">
+        <ConnectThirdPartyWalletButton />
+        <p className="space mt-4 max-w-80 text-center font-medium uppercase tracking-widest">
+          You must connect to your wallet before proceeding
+        </p>
       </div>
     );
   }
@@ -75,6 +176,9 @@ const Main = ({ merchant, page, params }: MainProps) => {
   return (
     <div className="relative mx-auto grid max-w-7xl items-center gap-6 px-6 py-6 md:grid-cols-2 lg:gap-36">
       <div className="md:no-scrollbar grid items-center justify-center gap-4 md:h-[90vh] md:gap-10 md:overflow-auto">
+        <div className="fixed right-10 top-4 z-50 disabled:pointer-events-none disabled:select-none disabled:opacity-45">
+          <ConnectThirdPartyWalletButton />
+        </div>
         <div className="flex items-center">
           <div className="grid gap-4 p-1">
             <h1 className="relative text-5xl font-bold">
@@ -137,13 +241,18 @@ const Main = ({ merchant, page, params }: MainProps) => {
           <CardContent>
             <small>Product Price</small>
             <Input
-              value={`USD ${data.price}`}
+              value={`SOL ${data.price}`}
               disabled
               readOnly
               className="bg-gray-300"
             />
-            <Button className="mt-4 w-full" variant={"secondary"}>
-              Pay with SolanaPay
+            <Button
+              className="mt-4 w-full disabled:pointer-events-none disabled:select-none disabled:opacity-40"
+              variant={"secondary"}
+              disabled={isLoading}
+              onClick={processTransaction}
+            >
+              Pay with SolanaPay {isLoading && <LoaderIcon className="ml-2" />}
             </Button>
           </CardContent>
         </Card>

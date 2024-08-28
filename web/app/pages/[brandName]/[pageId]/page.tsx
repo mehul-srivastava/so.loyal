@@ -28,7 +28,7 @@ const page = async ({
     return redirect("/");
   }
 
-  const page = await prisma.pages.findFirst({
+  const page = await prisma.page.findFirst({
     where: {
       id: params.pageId,
     },
