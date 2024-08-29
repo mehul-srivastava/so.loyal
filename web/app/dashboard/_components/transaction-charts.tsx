@@ -48,7 +48,7 @@ const TransactionCard = () => {
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b border-gray-700 p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle className="font-normal">Payments</CardTitle>
-          <CardDescription>Showing total payments for the past 3 months</CardDescription>
+          <CardDescription>Showing total payments for the past month</CardDescription>
         </div>
         <div className="flex">
           <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-gray-700 px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/25 sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
