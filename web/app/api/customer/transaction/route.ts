@@ -10,9 +10,12 @@ import {
   LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
 
+import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+
 export async function POST(request: NextRequest) {
   try {
-    const { buyerAddress, orderId, price, sellerAddress } =
+    const { buyerAddress, orderId, price, sellerAddress, merchantId, pageId } =
       await request.json();
 
     if (!buyerAddress) {
@@ -27,7 +30,7 @@ export async function POST(request: NextRequest) {
       return new NextResponse("Missing order ID", { status: 400 });
     }
 
-    const bigAmount = BigNumber(0.03);
+    const bigAmount = BigNumber(price);
     const buyerPublicKey = new PublicKey(buyerAddress);
     const sellerPublicKey = new PublicKey(sellerAddress);
     const network = WalletAdapterNetwork.Devnet;
@@ -60,8 +63,31 @@ export async function POST(request: NextRequest) {
     });
     const base64 = serializedTransaction.toString("base64");
 
+    const orderExists = await prisma.order.findFirst({
+      where: {
+        orderPublicKey: orderId,
+      },
+    });
+
+    if (orderExists) {
+      return new NextResponse("Cannot create the same order twice", {
+        status: 400,
+      });
+    }
+
+    const order = await prisma.order.create({
+      data: {
+        merchantId,
+        customerPublicKey: buyerAddress,
+        amount: new Prisma.Decimal(price),
+        orderPublicKey: orderId,
+        pageId,
+      },
+    });
+
     return NextResponse.json({
       transaction: base64,
+      id: order.id,
     });
   } catch (error) {
     console.error("[CUSTOMER TRANSACTION]", error);

@@ -9,7 +9,7 @@ import {
   PaymentPageDataContext,
 } from "@/components/providers/payment-page-context-provider";
 
-const ProductDetailSetup = () => {
+const ProductDetails = () => {
   const { appendData } = useContext(
     PaymentPageDataContext,
   ) as IPaymentPageDataContext;
@@ -42,4 +42,4 @@ const ProductDetailSetup = () => {
   );
 };
 
-export default ProductDetailSetup;
+export default ProductDetails;

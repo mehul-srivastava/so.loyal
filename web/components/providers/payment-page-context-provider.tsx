@@ -7,6 +7,7 @@ type IPaymentPageData = {
   description?: string;
   price?: number;
   stamp_count?: number;
+  point_count?: number;
   slug?: string;
 };
 
@@ -27,7 +28,6 @@ const PaymentPageDataProvider = ({
     title: "",
     description: "",
     price: 0,
-    stamp_count: 0,
     slug: "",
   });
 
@@ -36,6 +36,7 @@ const PaymentPageDataProvider = ({
       ...data,
       ...newData,
     }));
+    console.log(data);
   }
 
   return (

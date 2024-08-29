@@ -3,16 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { buyerAddress, orderId, price, merchantId, pageId } =
-      await request.json();
+    const { orderDbId } = await request.json();
 
-    await prisma.order.create({
+    await prisma.order.update({
+      where: {
+        id: orderDbId,
+      },
       data: {
-        merchantId,
-        customerPublicKey: buyerAddress,
-        amount: price,
-        orderPublicKey: orderId,
-        pageId,
+        status: {
+          set: "CONFIRMED",
+        },
       },
     });
 

@@ -31,6 +31,7 @@ model Page {
   id               String   @id
   merchantId       String
   programPublicKey String
+  type             String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   Orders           Order[]  @relation("Order")
@@ -42,11 +43,12 @@ model Page {
 
 model Order {
   id                Int      @id @default(autoincrement())
-  merchantId        String
-  pageId            String
+  merchantId        String // this merchant id is actually the brandName
+  pageId            String // this page is the `slug` or `id`
   customerPublicKey String
-  orderPublicKey    String
-  amount            Int
+  orderPublicKey    String   @unique
+  amount            Decimal
+  status            String   @default("PENDING")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 

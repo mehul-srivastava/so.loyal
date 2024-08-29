@@ -8,16 +8,17 @@ export async function POST(request: NextRequest) {
   try {
     const { userId } = auth();
 
-    const { slug, accountPublicKey } = await request.json();
+    const { slug, accountPublicKey, type } = await request.json();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    await prisma.pages.create({
+    await prisma.page.create({
       data: {
         id: slug,
         merchantId: userId,
+        type: "stamps",
         programPublicKey: accountPublicKey,
       },
     });

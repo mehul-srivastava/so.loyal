@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import toast, { LoaderIcon } from "react-hot-toast";
 import { useWallet } from "@solana/wallet-adapter-react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import { Web3WalletButton } from "@/components/ConnectWalletButton";
 
 export const formSchema = z.object({
@@ -31,7 +31,9 @@ export const formSchema = z.object({
     .url({ message: "Please enter a valid URL" })
     .min(2, { message: "Please enter more than 2 characters" })
     .max(70, { message: "Please enter less than 70 characters" }),
-  walletPublicAddress: z.string().min(1, { message: "Please enter a wallet address" }),
+  walletPublicAddress: z
+    .string()
+    .min(1, { message: "Please enter a wallet address" }),
   brandColor: z.string().min(3, { message: "Please choose a brand color" }),
   supportEmail: z.string().email({ message: "Please enter a valid email" }),
   supportPhone: z
@@ -62,8 +64,9 @@ const OnboardingForm = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await axios.post("/api/merchant/onboarding", values);
-      router.push("/dashboard");
       toast.success("Onboarding complete!");
+      router.push("/dashboard");
+      router.refresh();
     } catch {
       toast.error("Something went wrong!");
     }
@@ -82,7 +85,9 @@ const OnboardingForm = () => {
                 <FormControl>
                   <Input autoComplete="off" placeholder="100xdevs" {...field} />
                 </FormControl>
-                <FormDescription>What is the name of your website?</FormDescription>
+                <FormDescription>
+                  What is the name of your website?
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -136,7 +141,8 @@ const OnboardingForm = () => {
             render={({ field }) => (
               <FormItem className="col-span-12">
                 <FormLabel>
-                  Wallet's Public Address <small>(Connect a devnet wallet)</small>
+                  Wallet's Public Address{" "}
+                  <small>(Connect a devnet wallet)</small>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -154,8 +160,10 @@ const OnboardingForm = () => {
                     <div className="flex gap-x-4">
                       <Button
                         variant="link"
-                        className="text-white px-0 font-normal text-xs"
-                        onClick={(event) => field.onChange(publicKey?.toString())}
+                        className="px-0 text-xs font-normal text-white"
+                        onClick={(event) =>
+                          field.onChange(publicKey?.toString())
+                        }
                       >
                         Paste
                       </Button>
@@ -181,9 +189,15 @@ const OnboardingForm = () => {
               <FormItem className="col-span-6">
                 <FormLabel>Support Phone</FormLabel>
                 <FormControl>
-                  <Input autoComplete="off" placeholder="9811698116" {...field} />
+                  <Input
+                    autoComplete="off"
+                    placeholder="9811698116"
+                    {...field}
+                  />
                 </FormControl>
-                <FormDescription>What is your helpdesk contact no.?</FormDescription>
+                <FormDescription>
+                  What is your helpdesk contact no.?
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -195,9 +209,15 @@ const OnboardingForm = () => {
               <FormItem className="col-span-6">
                 <FormLabel>Support Email</FormLabel>
                 <FormControl>
-                  <Input autoComplete="off" placeholder="100xdevs@gmail.com" {...field} />
+                  <Input
+                    autoComplete="off"
+                    placeholder="100xdevs@gmail.com"
+                    {...field}
+                  />
                 </FormControl>
-                <FormDescription>What is your helpdesk email adress?</FormDescription>
+                <FormDescription>
+                  What is your helpdesk email adress?
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

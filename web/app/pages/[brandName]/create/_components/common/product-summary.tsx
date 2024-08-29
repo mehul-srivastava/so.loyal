@@ -15,7 +15,7 @@ import {
   PaymentPageDataContext,
 } from "@/components/providers/payment-page-context-provider";
 
-const TransactionSummarySetup = () => {
+const ProductSummary = () => {
   const { appendData } = useContext(
     PaymentPageDataContext,
   ) as IPaymentPageDataContext;
@@ -80,4 +80,4 @@ const TransactionSummarySetup = () => {
   );
 };
 
-export default TransactionSummarySetup;
+export default ProductSummary;
