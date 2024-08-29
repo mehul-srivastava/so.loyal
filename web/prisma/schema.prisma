@@ -54,3 +54,11 @@ model Order {
 
   page Page @relation("Order", fields: [pageId], references: [id])
 }
+
+model History {
+  id                    Int    @id @default(autoincrement())
+  websiteName           String
+  accountPublicKey      String
+  type                  String
+  customerWalletAddress String
+}
