@@ -4,15 +4,16 @@
 seeds = false
 skip-lint = false
 
+[programs.devnet]
+nfts_page = "8ayZJ9QMbXBg8viRCoCVLSPukKZjZkiUWLBj42niVBcz"
+points_page = "7ibPg4fmTEjLufBX4vFUK2ZsG9emD5bGLqnZmfFayKGx"
+stamps_history = "47RVTDVSkuTeiqPHEEWWnMxQwQpEefNNJA8ztPbwcvTQ"
+stamps_page = "CpPqrUDwBuh7HJCPfqMEg9VeVnnuiqvQnsGfZSbuc48y"
+
 [programs.localnet]
 points_page = "7ibPg4fmTEjLufBX4vFUK2ZsG9emD5bGLqnZmfFayKGx"
-stamps_page = "CpPqrUDwBuh7HJCPfqMEg9VeVnnuiqvQnsGfZSbuc48y"
 stamps_history = "47RVTDVSkuTeiqPHEEWWnMxQwQpEefNNJA8ztPbwcvTQ"
-
-[programs.devnet]
-points_page = "7ibPg4fmTEjLufBX4vFUK2ZsG9emD5bGLqnZmfFayKGx"
 stamps_page = "CpPqrUDwBuh7HJCPfqMEg9VeVnnuiqvQnsGfZSbuc48y"
-stamps_history = "47RVTDVSkuTeiqPHEEWWnMxQwQpEefNNJA8ztPbwcvTQ"
 
 [registry]
 url = "https://api.apr.dev"
