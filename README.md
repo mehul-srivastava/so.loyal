@@ -11,7 +11,7 @@ The second program, "NFT Coupons," mirrors the traditional coupon system found i
 
 ## 💻 Technologies
 The foundation of this project is based on Anchor (which btw has poor docs tbh). I used Rust to make smart contracts (they are pretty basic, nothing fancy). I used Postgres majorly to store the merchant metadata which is collected during the onboarding process, rest everything is decentralized apart from a few things here and there. For the web part, I made use of Next.js heavily. 
-Let me list down everything I used: Anchor, Typescript, Rust, Nextjs, Tailwind, Shadcn, Clerk Auth, @solana/web3.js, Recharts
+Let me list down everything I used: Anchor, Typescript, Rust, Nextjs, Tailwind, Metaplex, Shadcn, Clerk Auth, @solana/web3.js, Recharts
 
 ## 🛠️ Local Installation
 - Must have Node.js, Rust (1.78.0), Solana CLI (1.18.18) and Anchor (v0.29.0)
