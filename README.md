@@ -1,4 +1,4 @@
-# So.loyal - A loyalty-centric payment gateway for Solana
+# So.loyal - A loyalty-centric payment gateway
 
 ## 💡 Idea
 This solution is inspired by the Web2 concept where merchants don't need a full-fledged website to collect payments. Instead, they can set up a dedicated payment page for their products and simply share a link with their customers. I tried to reimagined this model in a truly decentralized manner, where each payment page is securely stored on the blockchain, ensuring transparency and immutability.
