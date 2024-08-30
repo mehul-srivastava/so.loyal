@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Order" ALTER COLUMN "orderPublicKey" DROP NOT NULL,
+ALTER COLUMN "amount" DROP NOT NULL;

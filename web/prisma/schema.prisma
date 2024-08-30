@@ -46,8 +46,8 @@ model Order {
   merchantId        String // this merchant id is actually the brandName
   pageId            String // this page is the `slug` or `id`
   customerPublicKey String
-  orderPublicKey    String   @unique
-  amount            Decimal
+  orderPublicKey    String?  @unique
+  amount            Decimal?
   status            String   @default("PENDING")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -58,7 +58,7 @@ model Order {
 model History {
   id                    Int    @id @default(autoincrement())
   websiteName           String
-  accountPublicKey      String
+  stampCount            Int
   type                  String
   customerWalletAddress String
 }

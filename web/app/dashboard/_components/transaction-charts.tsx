@@ -4,12 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import axios from "axios";
 
 export const description = "Lifetime collections";
@@ -29,7 +24,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const TransactionCard = () => {
+const TransactionCharts = () => {
   const [chartData, setChartData] = useState<IChartData[]>([]);
   const [total, setTotal] = useState(0);
 
@@ -53,9 +48,7 @@ const TransactionCard = () => {
         <div className="flex">
           <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t border-gray-700 px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/25 sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
             <span className="text-xs text-muted-foreground">Lifetime Collection</span>
-            <span className="text-lg font-semibold leading-none sm:text-3xl">
-              SOL {Math.round(total * 100) / 100}
-            </span>
+            <span className="text-lg font-semibold leading-none sm:text-3xl">SOL {Math.round(total * 100) / 100}</span>
           </div>
         </div>
       </CardHeader>
@@ -110,4 +103,4 @@ const TransactionCard = () => {
   );
 };
 
-export default TransactionCard;
+export default TransactionCharts;

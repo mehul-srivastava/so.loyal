@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import StampsComponent from "./_components/stamps-component";
 import PointsComponent from "./_components/points-component";
-import PaymentPageDataProvider from "@/components/providers/payment-page-context-provider";
+import PaymentPageDataProvider from "@/components/providers/payment-page-data-provider";
 
 const page = async ({
   params,

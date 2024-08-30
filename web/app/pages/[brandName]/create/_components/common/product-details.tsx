@@ -7,16 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   IPaymentPageDataContext,
   PaymentPageDataContext,
-} from "@/components/providers/payment-page-context-provider";
+} from "@/components/providers/payment-page-data-provider";
 
 const ProductDetails = () => {
-  const { appendData } = useContext(
-    PaymentPageDataContext,
-  ) as IPaymentPageDataContext;
+  const { appendData } = useContext(PaymentPageDataContext) as IPaymentPageDataContext;
 
-  function handler(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
+  function handler(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     appendData({ [e.target.name]: e.target.value });
   }
   return (

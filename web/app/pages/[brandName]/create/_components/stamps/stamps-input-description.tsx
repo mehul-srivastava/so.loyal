@@ -3,29 +3,23 @@
 import {
   IPaymentPageDataContext,
   PaymentPageDataContext,
-} from "@/components/providers/payment-page-context-provider";
+} from "@/components/providers/payment-page-data-provider";
 import { Input } from "@/components/ui/input";
 import { useContext } from "react";
 
 const StampsInputDescription = () => {
-  const { appendData } = useContext(
-    PaymentPageDataContext,
-  ) as IPaymentPageDataContext;
+  const { appendData } = useContext(PaymentPageDataContext) as IPaymentPageDataContext;
 
-  function handler(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
+  function handler(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     appendData({ [e.target.name]: parseInt(e.target.value) });
   }
   return (
     <div>
       <p>
-        <span className="underline">LOYALTY PROGRAM:</span> Introducing our
-        exciting loyalty program! Earn a stamp with every purchase and unlock a
-        freebie after collecting a certain number of stamps. It's our way of
-        thanking you for being a loyal customer. Start collecting those stamps
-        and treat yourself to a freebie after every X purchases. Happy
-        rewarding!
+        <span className="underline">LOYALTY PROGRAM:</span> Introducing our exciting loyalty
+        program! Earn a stamp with every purchase and unlock a freebie after collecting a certain
+        number of stamps. It's our way of thanking you for being a loyal customer. Start collecting
+        those stamps and treat yourself to a freebie after every X purchases. Happy rewarding!
       </p>
       <div className="mt-4">
         <Input

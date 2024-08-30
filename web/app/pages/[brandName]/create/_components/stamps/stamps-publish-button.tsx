@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import {
   type IPaymentPageDataContext,
   PaymentPageDataContext,
-} from "@/components/providers/payment-page-context-provider";
+} from "@/components/providers/payment-page-data-provider";
 import { getStampsProgram } from "@/anchor/stamps_pages/setup";
 
 type IStampsPublishButton = {

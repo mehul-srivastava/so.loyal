@@ -50,36 +50,27 @@ const page = async ({ params }: IPageProps) => {
 
   return (
     <div className="flex h-full min-h-screen w-full items-start justify-center bg-[#f8f8f8] md:items-center">
-      <div
-        className="fixed left-0 top-0 hidden h-full border-r-[10px] md:block"
-        style={borderStyles}
-      />
+      <div className="fixed left-0 top-0 hidden h-full border-r-[10px] md:block" style={borderStyles} />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-6 px-6 py-6 md:grid-cols-2 lg:gap-36">
         <div className="md:no-scrollbar grid items-center justify-center gap-4 md:h-[90vh] md:gap-10 md:overflow-auto">
           <div className="fixed right-10 top-4 z-50 disabled:pointer-events-none disabled:select-none disabled:opacity-45">
             <ConnectThirdPartyWalletButton />
           </div>
-          <ProductMetadata
-            merchant={merchant}
-            type={page.type}
-            programPublicKey={page.programPublicKey}
-          />
+          <ProductMetadata merchant={merchant} type={page.type} programPublicKey={page.programPublicKey} />
         </div>
         <div className="absolute left-1/2 top-1/2 hidden h-3/4 -translate-x-1/2 -translate-y-1/2 transform border-l border-muted-foreground md:block" />
         <div className="relative grid gap-6 md:gap-8">
           <Card>
             <CardHeader>
               <CardTitle>Summary</CardTitle>
-              <CardDescription>
-                Following is the amount you have to pay. Alternatively, if you had enough stamps
-                then you could pay using those.
-              </CardDescription>
+              <CardDescription>Following is the amount you have to pay. Alternatively, if you had enough stamps then you could pay using those.</CardDescription>
             </CardHeader>
             <CardContent>
               {page.type === "stamps" && (
                 <StampRewardPayment
                   params={params}
+                  merchantWebsiteName={merchant.websiteName}
                   programPublicKey={page.programPublicKey}
                   merchantWalletAddress={merchant.walletPublicAddress}
                   merchantId={merchant.id}
@@ -87,7 +78,7 @@ const page = async ({ params }: IPageProps) => {
               )}
             </CardContent>
           </Card>
-          {page.type === "stamps" && <StampRewardCard />}
+          {page.type === "stamps" && <StampRewardCard websiteName={merchant.websiteName} programPublicKey={page.programPublicKey} pageId={page.id} />}
         </div>
       </div>
     </div>

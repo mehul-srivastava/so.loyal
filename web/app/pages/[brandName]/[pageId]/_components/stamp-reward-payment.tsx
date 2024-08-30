@@ -1,18 +1,18 @@
 "use client";
 
 import axios from "axios";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { useRouter } from "next/navigation";
-import { findReference } from "@solana/pay";
+import { findReference, FindReferenceError } from "@solana/pay";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getStampsProgram } from "@/anchor/stamps_pages/setup";
 import { ConnectThirdPartyWalletButton } from "@/components/ConnectWalletButton";
+import { IPaymentPageCustomerContext, PaymentPageCustomerContext } from "@/components/providers/payment-page-customer-provider";
 
 interface IProductPayment {
   programPublicKey: string;
@@ -22,6 +22,7 @@ interface IProductPayment {
   };
   merchantId: string;
   merchantWalletAddress: string;
+  merchantWebsiteName: string;
 }
 
 interface IContractData {
@@ -33,19 +34,14 @@ interface IContractData {
   image: string;
 }
 
-const StampRewardPayment = ({
-  programPublicKey,
-  params,
-  merchantWalletAddress,
-  merchantId,
-}: IProductPayment) => {
+const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, merchantId, merchantWebsiteName }: IProductPayment) => {
   const [data, setData] = useState<IContractData>();
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isRunningTransaction, setIsRunningTransaction] = useState(false);
+  const { appendData } = useContext(PaymentPageCustomerContext) as IPaymentPageCustomerContext;
 
   const { connection } = useConnection();
   const customerWallet = useWallet();
-  const router = useRouter();
 
   const order = useMemo(
     () => ({
@@ -65,28 +61,31 @@ const StampRewardPayment = ({
     setIsPageLoading(false);
   }
 
+  function showStamps(count: number) {
+    appendData({ count: count });
+  }
+
   async function processTransaction() {
     try {
       setIsRunningTransaction(true);
 
       const txResponse = await initiliazeTransaction();
 
-      let count = 0,
-        time: any;
-      time = setInterval(async () => {
-        const result = await findReference(connection, new PublicKey(order.orderId));
-        if (result.confirmationStatus === "confirmed") {
-          if (count !== 0) return;
+      while (true) {
+        await new Promise((res, rej) => setTimeout(res, 1500));
 
-          await axios.post("/api/customer/confirmation", {
-            orderDbId: txResponse.data.id,
-          });
-          toast.success("Your purchase was successful!");
-          setTimeout(() => router.refresh(), 1000);
-          clearInterval(time);
-          count++;
-        }
-      }, 1000);
+        const result = await findReference(connection, new PublicKey(order.orderId));
+        if (result.confirmationStatus === "confirmed") break;
+      }
+
+      const response = await axios.post("/api/customer/confirmation", {
+        orderDbId: txResponse.data.id,
+        websiteName: merchantWebsiteName,
+        customerWalletAddress: customerWallet.publicKey?.toString(),
+      });
+
+      showStamps(response.data.stampsCount);
+      toast.success("Your purchase was successful!");
     } catch (error) {
       toast.error("Something went wrong!");
       console.error(error);
@@ -94,6 +93,30 @@ const StampRewardPayment = ({
       setIsRunningTransaction(false);
     }
   }
+
+  // async function checkStatus() {
+  //   try {
+
+  //     const txResponse = await initiliazeTransaction();
+
+  //     const result = await findReference(connection, new PublicKey(order.orderId));
+  //     if (result.confirmationStatus === "confirmed") {
+  //       const response = await axios.post("/api/customer/confirmation", {
+  //         orderDbId: txResponse.data.id,
+  //         websiteName: merchantWebsiteName,
+  //         customerWalletAddress: customerWallet.publicKey?.toString(),
+  //       });
+
+  //       showStamps(response.data.stampsCount);
+  //       toast.success("Your purchase was successful!");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Something went wrong!");
+  //     console.error(error);
+  //   } finally {
+  //     setIsRunningTransaction(false);
+  //   }
+  // }
 
   async function initiliazeTransaction() {
     const txResponse = await axios.post("/api/customer/transaction", {
@@ -117,9 +140,7 @@ const StampRewardPayment = ({
       <div className="fixed left-0 top-0 z-[100] grid h-screen w-screen place-items-center bg-white">
         <div className="flex flex-col items-center justify-center">
           <Loader2 className="h-28 w-28 animate-spin text-8xl font-thin" />
-          <p className="space mt-4 font-medium uppercase tracking-widest">
-            Fetching page from chain
-          </p>
+          <p className="space mt-4 font-medium uppercase tracking-widest">Fetching page from chain</p>
         </div>
       </div>
     );
@@ -130,9 +151,7 @@ const StampRewardPayment = ({
       <div className="fixed left-0 top-0 z-[100] grid h-screen w-screen place-items-center bg-white">
         <div className="flex flex-col items-center justify-center">
           <ConnectThirdPartyWalletButton />
-          <p className="space mt-4 max-w-80 text-center font-medium uppercase tracking-widest">
-            You must connect to your wallet before proceeding
-          </p>
+          <p className="space mt-4 max-w-80 text-center font-medium uppercase tracking-widest">You must connect to your wallet before proceeding</p>
         </div>
       </div>
     );
@@ -142,12 +161,7 @@ const StampRewardPayment = ({
     <>
       <small>Product Price</small>
       <Input value={`SOL ${data?.price}`} disabled readOnly className="bg-gray-300" />
-      <Button
-        className="mt-4 w-full disabled:pointer-events-none disabled:select-none disabled:opacity-40"
-        variant={"secondary"}
-        disabled={isRunningTransaction}
-        onClick={processTransaction}
-      >
+      <Button className="mt-4 w-full disabled:pointer-events-none disabled:select-none disabled:opacity-40" variant={"secondary"} disabled={isRunningTransaction} onClick={processTransaction}>
         Pay using SOL {isRunningTransaction && <Loader2 className="ml-2 animate-spin" size={14} />}
       </Button>
     </>

@@ -2,27 +2,17 @@
 
 import React, { useContext } from "react";
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   type IPaymentPageDataContext,
   PaymentPageDataContext,
-} from "@/components/providers/payment-page-context-provider";
+} from "@/components/providers/payment-page-data-provider";
 
 const ProductSummary = () => {
-  const { appendData } = useContext(
-    PaymentPageDataContext,
-  ) as IPaymentPageDataContext;
+  const { appendData } = useContext(PaymentPageDataContext) as IPaymentPageDataContext;
 
-  function handler(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
+  function handler(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     appendData({ [e.target.name]: e.target.value });
   }
   return (
@@ -30,8 +20,8 @@ const ProductSummary = () => {
       <CardHeader>
         <CardTitle>Transaction Summary</CardTitle>
         <CardDescription>
-          Customers can pay easily using their favourite wallets. We got
-          Phantom, Backpack, Solflare, Glow, Tiplink and many more.
+          Customers can pay easily using their favourite wallets. We got Phantom, Backpack,
+          Solflare, Glow, Tiplink and many more.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -65,15 +55,13 @@ const ProductSummary = () => {
 
         <div className="relative">
           <Input
-            placeholder="USD 20.99"
+            placeholder="SOL 0.034"
             type="number"
             name="price"
             onChange={handler}
             className="border-gray-200"
           />
-          <small className="text-gray-400">
-            Enter price for product in USD
-          </small>
+          <small className="text-gray-400">Enter price for product in SOL</small>
         </div>
       </CardContent>
     </Card>

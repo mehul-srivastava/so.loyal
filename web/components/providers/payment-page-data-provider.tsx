@@ -16,14 +16,9 @@ export type IPaymentPageDataContext = {
   appendData: (obj: IPaymentPageData) => void;
 };
 
-export const PaymentPageDataContext =
-  createContext<IPaymentPageDataContext | null>(null);
+export const PaymentPageDataContext = createContext<IPaymentPageDataContext | null>(null);
 
-const PaymentPageDataProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+const PaymentPageDataProvider = ({ children }: { children: React.ReactNode }) => {
   const [data, setData] = useState<IPaymentPageData>({
     title: "",
     description: "",
@@ -36,7 +31,6 @@ const PaymentPageDataProvider = ({
       ...data,
       ...newData,
     }));
-    console.log(data);
   }
 
   return (
