@@ -9,37 +9,18 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Web3WalletButton } from "@/components/ConnectWalletButton";
+import { formatInput } from "@/lib/utils";
 
 export const formSchema = z.object({
-  websiteName: z
-    .string()
-    .min(2, { message: "Please enter more than 2 characters" })
-    .max(70, { message: "Please enter less than 70 characters" }),
-  websiteLink: z
-    .string()
-    .url({ message: "Please enter a valid URL" })
-    .min(2, { message: "Please enter more than 2 characters" })
-    .max(70, { message: "Please enter less than 70 characters" }),
-  walletPublicAddress: z
-    .string()
-    .min(1, { message: "Please enter a wallet address" }),
+  websiteName: z.string().min(2, { message: "Please enter more than 2 characters" }).max(70, { message: "Please enter less than 70 characters" }),
+  websiteLink: z.string().url({ message: "Please enter a valid URL" }).min(2, { message: "Please enter more than 2 characters" }).max(70, { message: "Please enter less than 70 characters" }),
+  walletPublicAddress: z.string().min(1, { message: "Please enter a wallet address" }),
   brandColor: z.string().min(3, { message: "Please choose a brand color" }),
   supportEmail: z.string().email({ message: "Please enter a valid email" }),
-  supportPhone: z
-    .string()
-    .min(10, { message: "Please enter a valid phone number" })
-    .max(10, { message: "Please enter a valid phone number" }),
+  supportPhone: z.string().min(10, { message: "Please enter a valid phone number" }).max(10, { message: "Please enter a valid phone number" }),
 });
 
 const OnboardingForm = () => {
@@ -52,7 +33,7 @@ const OnboardingForm = () => {
     defaultValues: {
       websiteName: "",
       websiteLink: "",
-      brandColor: "#28ef34",
+      brandColor: "#2a61eb",
       supportEmail: "",
       supportPhone: "",
       walletPublicAddress: connected ? publicKey!.toString() : "",
@@ -83,11 +64,9 @@ const OnboardingForm = () => {
               <FormItem className="col-span-5">
                 <FormLabel>Website Name</FormLabel>
                 <FormControl>
-                  <Input autoComplete="off" placeholder="100xdevs" {...field} />
+                  <Input autoComplete="off" placeholder="100xdevs" {...field} onBlur={(e) => field.onChange(formatInput(e.target.value))} />
                 </FormControl>
-                <FormDescription>
-                  What is the name of your website?
-                </FormDescription>
+                <FormDescription>What is the name of your website?</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -99,15 +78,9 @@ const OnboardingForm = () => {
               <FormItem className="col-span-5">
                 <FormLabel>Website Link</FormLabel>
                 <FormControl>
-                  <Input
-                    autoComplete="off"
-                    placeholder="https://100xdevs.com"
-                    {...field}
-                  />
+                  <Input autoComplete="off" placeholder="https://100xdevs.com" {...field} />
                 </FormControl>
-                <FormDescription>
-                  What is the magical link for your website?
-                </FormDescription>
+                <FormDescription>What is the magical link for your website?</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -119,13 +92,7 @@ const OnboardingForm = () => {
               <FormItem className="col-span-2">
                 <FormLabel>Brand Color</FormLabel>
                 <FormControl>
-                  <Input
-                    autoComplete="off"
-                    type="color"
-                    className="ring-black"
-                    placeholder="shadcn"
-                    {...field}
-                  />
+                  <Input autoComplete="off" type="color" className="ring-black" placeholder="shadcn" {...field} />
                 </FormControl>
                 <FormDescription>Choose your brand color.</FormDescription>
                 <FormMessage />
@@ -141,37 +108,20 @@ const OnboardingForm = () => {
             render={({ field }) => (
               <FormItem className="col-span-12">
                 <FormLabel>
-                  Wallet's Public Address{" "}
-                  <small>(Connect a devnet wallet)</small>
+                  Wallet's Public Address <small>(Make sure you have enough SOL)</small>
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    autoComplete="off"
-                    placeholder="0x76d3047740Cf71400DcfF74AbeA12eC834ff5035"
-                    {...field}
-                  />
+                  <Input autoComplete="off" placeholder="0x76d3047740Cf71400DcfF74AbeA12eC834ff5035" {...field} />
                 </FormControl>
                 <FormDescription className="!mt-0">
                   {connecting && "Loading..."}
-                  {!connected && (
-                    <Web3WalletButton action="connect" text="Show Wallets" />
-                  )}
+                  {!connected && <Web3WalletButton action="connect" text="Show Wallets" />}
                   {connected && (
                     <div className="flex gap-x-4">
-                      <Button
-                        variant="link"
-                        className="px-0 text-xs font-normal text-white"
-                        onClick={(event) =>
-                          field.onChange(publicKey?.toString())
-                        }
-                      >
+                      <Button variant="link" className="px-0 text-xs font-normal text-white" onClick={(event) => field.onChange(publicKey?.toString())}>
                         Paste
                       </Button>
-                      <Web3WalletButton
-                        action="disconnect"
-                        text="Disconnect Wallet"
-                        onClickFn={() => field.onChange("")}
-                      />
+                      <Web3WalletButton action="disconnect" text="Disconnect Wallet" onClickFn={() => field.onChange("")} />
                     </div>
                   )}
                 </FormDescription>
@@ -189,15 +139,9 @@ const OnboardingForm = () => {
               <FormItem className="col-span-6">
                 <FormLabel>Support Phone</FormLabel>
                 <FormControl>
-                  <Input
-                    autoComplete="off"
-                    placeholder="9811698116"
-                    {...field}
-                  />
+                  <Input autoComplete="off" placeholder="9811698116" {...field} />
                 </FormControl>
-                <FormDescription>
-                  What is your helpdesk contact no.?
-                </FormDescription>
+                <FormDescription>What is your helpdesk contact no.?</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -209,15 +153,9 @@ const OnboardingForm = () => {
               <FormItem className="col-span-6">
                 <FormLabel>Support Email</FormLabel>
                 <FormControl>
-                  <Input
-                    autoComplete="off"
-                    placeholder="100xdevs@gmail.com"
-                    {...field}
-                  />
+                  <Input autoComplete="off" placeholder="100xdevs@gmail.com" {...field} />
                 </FormControl>
-                <FormDescription>
-                  What is your helpdesk email adress?
-                </FormDescription>
+                <FormDescription>What is your helpdesk email adress?</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

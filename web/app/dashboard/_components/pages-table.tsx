@@ -18,17 +18,10 @@ const PaymentPagesTable = async ({ merchantId }: { merchantId: string }) => {
     },
   });
 
-  console.log(pages);
-
   return (
     <div className="mt-20 rounded-lg shadow-lg">
       <div className="mb-5 flex w-full items-center justify-between">
         <h2 className="text-2xl">Payment Pages</h2>
-        <Link href="/dashboard/payment-pages">
-          <Button className="block" variant="secondary">
-            Create Payment Page
-          </Button>
-        </Link>
       </div>
       <Table>
         <TableHeader>
@@ -54,6 +47,7 @@ const PaymentPagesTable = async ({ merchantId }: { merchantId: string }) => {
           ))}
         </TableBody>
       </Table>
+      {pages.length <= 0 && <p className="mt-4 w-full text-gray-500">No payment pages yet created!</p>}
     </div>
   );
 };

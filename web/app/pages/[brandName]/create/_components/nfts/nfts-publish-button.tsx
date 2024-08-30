@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { getNftsProgram } from "@/anchor/nfts_pages/setup";
 import { Dialog, DialogTrigger, DialogDescription, DialogFooter, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { type IPaymentPageDataContext, PaymentPageDataContext } from "@/components/providers/payment-page-data-provider";
+import { formatInput } from "@/lib/utils";
 
 type INftsPublishButtonProps = {
   params: { brandName: string };
@@ -29,33 +30,35 @@ const NftsPublishButton = ({ params, searchParams }: INftsPublishButtonProps) =>
   const { publicKey } = useWallet();
 
   function handler(e: React.ChangeEvent<HTMLInputElement>) {
-    appendData({ [e.target.name]: e.target.value });
+    appendData({ [e.target.name]: formatInput(e.target.value) });
   }
 
   async function handleClick() {
     setLoading(true);
     try {
-      const accountPublicKey = await putNftsOnChain();
+      const account = new Keypair();
       await axios.post("/api/merchant/pages", {
         slug: data.slug!,
-        accountPublicKey,
+        accountPublicKey: account.publicKey.toString(),
         type,
       });
 
-      const route = `/pages/${params.brandName}/${data.slug!}`;
+      await putNftsOnChain(account);
 
+      const route = `/pages/${params.brandName}/${data.slug!}`;
       toast.success("Your page has been published!");
 
-      setTimeout(() => router.push(route), 3000);
+      setTimeout(() => {
+        router.push(route);
+        router.refresh();
+      }, 3000);
     } catch (error) {
       toast.error("Something went wrong!");
-    } finally {
       setLoading(false);
     }
   }
 
-  async function putNftsOnChain() {
-    const account = new Keypair(); // #1: This is the account owner for this payment page, you must save its pubkey in database
+  async function putNftsOnChain(account: Keypair) {
     const program = getNftsProgram(wallet!); // #2: This is the program object which contains all the methods
 
     const txnSignature = await program.methods
@@ -95,8 +98,10 @@ const NftsPublishButton = ({ params, searchParams }: INftsPublishButtonProps) =>
             Custom Slug
           </Label>
           <div className="flex">
-            <span className="inline-flex items-center rounded-md rounded-e-none border border-e-0 border-gray-300 bg-gray-100 px-3 text-sm">/{params.brandName}/</span>
-            <Input name="slug" onChange={handler} placeholder="cohort-2-fullstack" className="col-span-3 rounded-s-none border-s-0 border-gray-300 !ring-0" />
+            <span className="inline-flex items-center rounded-md rounded-e-none border border-e-0 border-gray-300 bg-gray-100 px-3 text-sm">
+              /{params.brandName.slice(0, 10).concat(params.brandName.length > 10 ? "..." : "")}/
+            </span>
+            <Input name="slug" onChange={handler} placeholder="an-amazing-slug" className="col-span-3 rounded-s-none border-s-0 border-gray-300 !ring-0" />
           </div>
         </div>
         <DialogFooter>
