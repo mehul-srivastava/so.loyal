@@ -1,11 +1,11 @@
 {
   "name": "soloyal-coupon",
-  "symbol": "SO.LOYAL",
+  "symbol": "SL",
   "description": "This is a soloyal NFT coupon which you can use to purchase products on any NFT-enabled product page.",
   "image": "0.png",
   "attributes": [
     {
-      "trait_type": "Number",
+      "trait_type": "simple",
       "value": "0"
     }
   ],
