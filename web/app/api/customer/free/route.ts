@@ -8,33 +8,39 @@ export async function POST(request: NextRequest) {
     if (!customerPublicKey) return new NextResponse("Missing field", { status: 400 });
     if (!websiteName) return new NextResponse("Missing field", { status: 400 });
 
-    await prisma.order.create({
-      data: {
-        merchantId: websiteName,
-        pageId,
-        customerPublicKey,
-        status: "CONFIRMED",
-      },
-    });
-
-    const history = await prisma.history.findFirst({
-      where: {
-        customerWalletAddress: customerPublicKey,
-      },
-    });
-
-    const leftCount = await prisma.history.update({
-      where: {
-        id: history!.id,
-      },
-      data: {
-        stampCount: {
-          decrement: requiredCount,
+    await prisma.$transaction(async (tx) => {
+      await tx.order.create({
+        data: {
+          merchantId: websiteName,
+          pageId,
+          amount: 0,
+          customerPublicKey,
+          status: "CONFIRMED",
         },
-      },
+      });
+
+      const history = await tx.history.findMany({
+        where: {
+          customerWalletAddress: customerPublicKey,
+          websiteName,
+          used: false,
+        },
+        take: requiredCount,
+      });
+
+      const historyIds = history.map((item: any) => item.id);
+
+      await tx.history.updateMany({
+        where: {
+          id: { in: historyIds },
+        },
+        data: {
+          used: true,
+        },
+      });
     });
 
-    return NextResponse.json({ leftCount: leftCount.stampCount });
+    return NextResponse.json({});
   } catch (error) {
     console.log("[CUSTOMER FREE STAMP]", error);
     return new NextResponse("Internal server error", { status: 500 });

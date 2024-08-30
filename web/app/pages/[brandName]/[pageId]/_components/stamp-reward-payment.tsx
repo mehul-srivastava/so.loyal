@@ -3,7 +3,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Router } from "lucide-react";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { findReference, FindReferenceError } from "@solana/pay";
@@ -38,7 +38,8 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
   const [data, setData] = useState<IContractData>();
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isRunningTransaction, setIsRunningTransaction] = useState(false);
-  const { appendData } = useContext(PaymentPageCustomerContext) as IPaymentPageCustomerContext;
+  const [refreshCount, setRefreshCount] = useState(0);
+  const { data: contextData, appendData } = useContext(PaymentPageCustomerContext) as IPaymentPageCustomerContext;
 
   const { connection } = useConnection();
   const customerWallet = useWallet();
@@ -50,7 +51,7 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
       price: Number(data?.price.toFixed(2)!),
       sellerAddress: merchantWalletAddress,
     }),
-    [customerWallet.publicKey, data],
+    [customerWallet.publicKey, data, refreshCount],
   );
 
   async function getStampsData() {
@@ -61,31 +62,36 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
     setIsPageLoading(false);
   }
 
-  function showStamps(count: number) {
-    appendData({ count: count });
+  function showStamps() {
+    appendData({ count: contextData.count! + 1 });
   }
 
   async function processTransaction() {
     try {
       setIsRunningTransaction(true);
 
-      const txResponse = await initiliazeTransaction();
+      const { txResponse, txHash } = await initiliazeTransaction();
 
       while (true) {
-        await new Promise((res, rej) => setTimeout(res, 1500));
-
-        const result = await findReference(connection, new PublicKey(order.orderId));
-        if (result.confirmationStatus === "confirmed") break;
+        await new Promise((res, rej) => setTimeout(res, 1000));
+        try {
+          const result = await findReference(connection, new PublicKey(order.orderId));
+          if (result.confirmationStatus === "confirmed" || result.confirmationStatus === "finalized") break;
+        } catch (error) {
+          console.log("not found");
+        }
       }
 
-      const response = await axios.post("/api/customer/confirmation", {
+      await axios.post("/api/customer/confirmation", {
         orderDbId: txResponse.data.id,
         websiteName: merchantWebsiteName,
-        customerWalletAddress: customerWallet.publicKey?.toString(),
+        txSignature: txHash,
+        customerWalletAddress: order.buyerAddress,
       });
 
-      showStamps(response.data.stampsCount);
+      showStamps();
       toast.success("Your purchase was successful!");
+      setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
       toast.error("Something went wrong!");
       console.error(error);
@@ -93,30 +99,6 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
       setIsRunningTransaction(false);
     }
   }
-
-  // async function checkStatus() {
-  //   try {
-
-  //     const txResponse = await initiliazeTransaction();
-
-  //     const result = await findReference(connection, new PublicKey(order.orderId));
-  //     if (result.confirmationStatus === "confirmed") {
-  //       const response = await axios.post("/api/customer/confirmation", {
-  //         orderDbId: txResponse.data.id,
-  //         websiteName: merchantWebsiteName,
-  //         customerWalletAddress: customerWallet.publicKey?.toString(),
-  //       });
-
-  //       showStamps(response.data.stampsCount);
-  //       toast.success("Your purchase was successful!");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Something went wrong!");
-  //     console.error(error);
-  //   } finally {
-  //     setIsRunningTransaction(false);
-  //   }
-  // }
 
   async function initiliazeTransaction() {
     const txResponse = await axios.post("/api/customer/transaction", {
@@ -128,7 +110,7 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
     const txHash = await customerWallet.sendTransaction(tx, connection);
     console.log(`Transaction sent: https://explorer.solana.com/tx/${txHash}?cluster=devnet`);
 
-    return txResponse;
+    return { txResponse, txHash };
   }
 
   useEffect(() => {

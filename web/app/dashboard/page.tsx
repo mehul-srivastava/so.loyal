@@ -29,7 +29,7 @@ const page = async () => {
       <h2 className="text-3xl">Hello, Mehul Srivastava 👋</h2>
       <h4 className="text-xl text-gray-500">Welcome to so.loyal!</h4>
       <TransactionCharts />
-      <PaymentPagesTable />
+      <PaymentPagesTable merchantId={userId} />
     </div>
   );
 };

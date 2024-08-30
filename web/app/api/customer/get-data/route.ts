@@ -3,16 +3,18 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
-  const { websiteName, walletPublicAddress } = await request.json();
+  const { signatures, websiteName } = await request.json();
 
-  const history = await prisma.history.findFirst({
+  const signatureStrings = signatures.map((sig: any) => sig.signature);
+  const availableCoupons = await prisma.history.count({
     where: {
       websiteName: websiteName,
-      customerWalletAddress: walletPublicAddress,
+      txSignature: { in: signatureStrings },
+      used: false,
     },
   });
 
   return NextResponse.json({
-    count: history?.stampCount || 0,
+    count: availableCoupons,
   });
 }

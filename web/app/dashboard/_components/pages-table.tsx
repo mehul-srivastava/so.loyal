@@ -4,7 +4,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 
-const PaymentPagesTable = async () => {
+const PaymentPagesTable = async ({ merchantId }: { merchantId: string }) => {
   const pages = await prisma.page.findMany({
     include: {
       merchant: {
@@ -13,7 +13,12 @@ const PaymentPagesTable = async () => {
         },
       },
     },
+    where: {
+      merchantId,
+    },
   });
+
+  console.log(pages);
 
   return (
     <div className="mt-20 rounded-lg shadow-lg">

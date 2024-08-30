@@ -10,7 +10,7 @@ import Image from "next/image";
 import axios from "axios";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getStampsProgram } from "@/anchor/stamps_pages/setup";
-import { PublicKey } from "@solana/web3.js";
+import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -29,21 +29,26 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
   const { publicKey, connected } = useWallet();
   const router = useRouter();
 
-  async function getStampsCount() {
-    const response = await axios.post("/api/customer/get-data", {
-      walletPublicAddress: publicKey,
-      websiteName,
-    });
+  async function getStampsRequiredCount() {
+    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+    const customerPublicKey = new PublicKey(publicKey!);
 
     const program = getStampsProgram("" as any);
     const data = await program.account.stampsPage.fetch(new PublicKey(programPublicKey));
-    appendData({ requiredCount: data.stampCount, count: response.data.count });
+
+    try {
+      const signatures = await connection.getSignaturesForAddress(customerPublicKey);
+      const response = await axios.post("/api/customer/get-data", { signatures, websiteName });
+      appendData({ requiredCount: data.stampCount, count: response.data.count });
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
   }
 
   async function processTransaction() {
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/customer/free", {
+      await axios.post("/api/customer/free", {
         customerPublicKey: publicKey,
         websiteName,
         requiredCount: data?.requiredCount,
@@ -51,7 +56,7 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
       });
 
       toast.success("Paid successfully using stamps!");
-      appendData({ count: response.data.leftCount });
+      appendData({ count: data.count! - data.requiredCount! });
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong!");
@@ -59,11 +64,9 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
   }
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
-    if (connected) getStampsCount();
+    if (connected) {
+      getStampsRequiredCount();
+    }
   }, [publicKey]);
 
   return (

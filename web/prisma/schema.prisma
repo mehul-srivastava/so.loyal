@@ -56,9 +56,9 @@ model Order {
 }
 
 model History {
-  id                    Int    @id @default(autoincrement())
+  id                    Int     @id @default(autoincrement())
   websiteName           String
-  stampCount            Int
-  type                  String
+  txSignature           String
+  used                  Boolean @default(false)
   customerWalletAddress String
 }
