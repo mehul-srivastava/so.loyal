@@ -7,8 +7,9 @@ type IPaymentPageData = {
   description?: string;
   price?: number;
   stamp_count?: number;
-  point_count?: number;
+  nft_count?: number;
   slug?: string;
+  image?: string;
 };
 
 export type IPaymentPageDataContext = {
@@ -33,11 +34,7 @@ const PaymentPageDataProvider = ({ children }: { children: React.ReactNode }) =>
     }));
   }
 
-  return (
-    <PaymentPageDataContext.Provider value={{ data, appendData }}>
-      {children}
-    </PaymentPageDataContext.Provider>
-  );
+  return <PaymentPageDataContext.Provider value={{ data, appendData }}>{children}</PaymentPageDataContext.Provider>;
 };
 
 export default PaymentPageDataProvider;

@@ -1,6 +1,6 @@
-export type PointsPage = {
+export type NftsPage = {
   version: "0.1.0";
-  name: "points_page";
+  name: "nfts_page";
   instructions: [
     {
       name: "initializePage";
@@ -35,7 +35,7 @@ export type PointsPage = {
           type: "f32";
         },
         {
-          name: "points";
+          name: "nftCount";
           type: "u32";
         },
         {
@@ -67,7 +67,7 @@ export type PointsPage = {
           type: "f32";
         },
         {
-          name: "points";
+          name: "nftCount";
           type: "u32";
         },
         {
@@ -79,7 +79,7 @@ export type PointsPage = {
   ];
   accounts: [
     {
-      name: "pointsPage";
+      name: "nftsPage";
       type: {
         kind: "struct";
         fields: [
@@ -96,7 +96,7 @@ export type PointsPage = {
             type: "f32";
           },
           {
-            name: "points";
+            name: "nftCount";
             type: "u32";
           },
           {
@@ -109,9 +109,9 @@ export type PointsPage = {
   ];
 };
 
-export const IDL: PointsPage = {
+export const IDL: NftsPage = {
   version: "0.1.0",
-  name: "points_page",
+  name: "nfts_page",
   instructions: [
     {
       name: "initializePage",
@@ -146,7 +146,7 @@ export const IDL: PointsPage = {
           type: "f32",
         },
         {
-          name: "points",
+          name: "nftCount",
           type: "u32",
         },
         {
@@ -178,7 +178,7 @@ export const IDL: PointsPage = {
           type: "f32",
         },
         {
-          name: "points",
+          name: "nftCount",
           type: "u32",
         },
         {
@@ -190,7 +190,7 @@ export const IDL: PointsPage = {
   ],
   accounts: [
     {
-      name: "pointsPage",
+      name: "nftsPage",
       type: {
         kind: "struct",
         fields: [
@@ -207,7 +207,7 @@ export const IDL: PointsPage = {
             type: "f32",
           },
           {
-            name: "points",
+            name: "nftCount",
             type: "u32",
           },
           {

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       data: {
         id: slug,
         merchantId: userId,
-        type: "stamps",
+        type: type,
         programPublicKey: accountPublicKey,
       },
     });

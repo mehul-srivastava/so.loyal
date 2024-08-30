@@ -10,9 +10,9 @@ import { findReference } from "@solana/pay";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getStampsProgram } from "@/anchor/stamps_pages/setup";
 import { ConnectThirdPartyWalletButton } from "@/components/ConnectWalletButton";
 import { IPaymentPageCustomerContext, PaymentPageCustomerContext } from "@/components/providers/payment-page-customer-provider";
+import { getNftsProgram } from "@/anchor/nfts_pages/setup";
 
 interface IProductPayment {
   programPublicKey: string;
@@ -53,10 +53,10 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
     [customerWallet.publicKey, data],
   );
 
-  async function getStampsData() {
-    const program = getStampsProgram("" as any);
+  async function getNftsData() {
+    const program = getNftsProgram("" as any);
     const publicKey = new PublicKey(programPublicKey);
-    const data = await program.account.stampsPage.fetch(publicKey);
+    const data = await program.account.nftsPage.fetch(publicKey);
     setData(data);
     setIsPageLoading(false);
   }
@@ -113,7 +113,7 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
   }
 
   useEffect(() => {
-    getStampsData();
+    getNftsData();
   }, []);
 
   if (isPageLoading) {

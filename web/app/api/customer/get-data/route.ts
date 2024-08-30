@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   const { signatures, websiteName } = await request.json();
 
   const signatureStrings = signatures.map((sig: any) => sig.signature);
-  const availableCoupons = await prisma.history.count({
+  const availableNum = await prisma.history.count({
     where: {
       websiteName: websiteName,
       txSignature: { in: signatureStrings },
@@ -15,6 +15,6 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json({
-    count: availableCoupons,
+    count: availableNum,
   });
 }

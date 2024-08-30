@@ -6,7 +6,9 @@ import { ConnectThirdPartyWalletButton } from "@/components/ConnectWalletButton"
 
 import StampRewardCard from "./_components/stamp-reward-card";
 import ProductMetadata from "./_components/product-metadata";
+import NftRewardCard from "./_components/nft-reward-card";
 import StampRewardPayment from "./_components/stamp-reward-payment";
+import NftRewardPayment from "./_components/nft-reward-payment";
 
 interface IPageProps {
   params: {
@@ -53,7 +55,7 @@ const page = async ({ params }: IPageProps) => {
       <div className="fixed left-0 top-0 hidden h-full border-r-[10px] md:block" style={borderStyles} />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-6 px-6 py-6 md:grid-cols-2 lg:gap-36">
-        <div className="md:no-scrollbar grid items-center justify-center gap-4 md:h-[90vh] md:gap-10 md:overflow-auto">
+        <div className="md:no-scrollbar grid items-center justify-center gap-4 md:h-[90vh] md:gap-10 md:overflow-y-auto">
           <div className="fixed right-10 top-4 z-50 disabled:pointer-events-none disabled:select-none disabled:opacity-45">
             <ConnectThirdPartyWalletButton />
           </div>
@@ -64,11 +66,20 @@ const page = async ({ params }: IPageProps) => {
           <Card>
             <CardHeader>
               <CardTitle>Summary</CardTitle>
-              <CardDescription>Following is the amount you have to pay. Alternatively, if you had enough stamps then you could pay using those.</CardDescription>
+              <CardDescription>Following is the amount you have to pay. Alternatively, if you have enough collection then you could pay using those.</CardDescription>
             </CardHeader>
             <CardContent>
-              {page.type === "stamps" && (
+              {page.type === "stamp" && (
                 <StampRewardPayment
+                  params={params}
+                  merchantWebsiteName={merchant.websiteName}
+                  programPublicKey={page.programPublicKey}
+                  merchantWalletAddress={merchant.walletPublicAddress}
+                  merchantId={merchant.id}
+                />
+              )}
+              {page.type === "nft" && (
+                <NftRewardPayment
                   params={params}
                   merchantWebsiteName={merchant.websiteName}
                   programPublicKey={page.programPublicKey}
@@ -78,7 +89,8 @@ const page = async ({ params }: IPageProps) => {
               )}
             </CardContent>
           </Card>
-          {page.type === "stamps" && <StampRewardCard websiteName={merchant.websiteName} programPublicKey={page.programPublicKey} pageId={page.id} />}
+          {page.type === "stamp" && <StampRewardCard websiteName={merchant.websiteName} programPublicKey={page.programPublicKey} pageId={page.id} />}
+          {page.type === "nft" && <NftRewardCard websiteName={merchant.websiteName} programPublicKey={page.programPublicKey} pageId={page.id} />}
         </div>
       </div>
     </div>

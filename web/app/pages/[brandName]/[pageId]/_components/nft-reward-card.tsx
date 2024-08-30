@@ -11,7 +11,7 @@ import { Loader2, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { IPaymentPageCustomerContext, PaymentPageCustomerContext } from "@/components/providers/payment-page-customer-provider";
-import { getStampsProgram } from "@/anchor/stamps_pages/setup";
+import { getNftsProgram } from "@/anchor/nfts_pages/setup";
 
 interface IStampRewardCardProps {
   websiteName: string;
@@ -27,17 +27,17 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
 
   const { publicKey, connected } = useWallet();
 
-  async function getStampsRequiredCount() {
+  async function getNftsRequiredCount() {
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     const customerPublicKey = new PublicKey(publicKey!);
 
-    const program = getStampsProgram("" as any);
-    const data = await program.account.stampsPage.fetch(new PublicKey(programPublicKey));
+    const program = getNftsProgram("" as any);
+    const data = await program.account.nftsPage.fetch(new PublicKey(programPublicKey));
 
     try {
       const signatures = await connection.getSignaturesForAddress(customerPublicKey);
       const response = await axios.post("/api/customer/get-data", { signatures, websiteName });
-      appendData({ requiredCount: data.stampCount, count: response.data.count });
+      appendData({ requiredCount: data.nftCount, count: response.data.count });
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
@@ -53,7 +53,7 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
         pageId,
       });
 
-      toast.success("Paid successfully using stamps!");
+      toast.success("Paid successfully using coupons!");
       appendData({ count: data.count! - data.requiredCount! });
     } catch (error) {
       console.log(error);
@@ -63,33 +63,31 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
 
   useEffect(() => {
     if (connected) {
-      getStampsRequiredCount();
+      getNftsRequiredCount();
     }
   }, [publicKey]);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Stamps Collection</CardTitle>
-        <CardDescription>Get a stamp on your card after every purchase. You can unlock a freebie after every X purchases.</CardDescription>
+        <CardTitle>NFT Coupons</CardTitle>
+        <CardDescription>Get an NFT coupon that you can show-off to your friends. You can unlock a freebie after every X purchases.</CardDescription>
       </CardHeader>
       <CardContent>
         {count <= 0 && (
           <div className="flex items-center justify-center gap-x-4">
             <p className="text-6xl">😞</p>
             <div className="text-gray-500">
-              <p>You haven't unlocked any stamp cards yet.</p>
+              <p>You haven't unlocked any coupons yet.</p>
               <p>Please make a purchase to unlock one</p>
             </div>
           </div>
         )}
 
         {count > 0 && (
-          <div className="mx-auto grid max-w-80 grid-cols-5 gap-4">
-            {Array.from(new Array(count)).map((item, idx) => (
-              <Image src="/stamp.svg" alt="stamp" height={32} width={32} key={idx} />
-            ))}
-          </div>
+          <p className="px-4 text-sm text-gray-700">
+            You have {count} minted NFT coupon{count > 1 && "s"} in your wallet. You still need {data.requiredCount! - count} to enable a freebie.
+          </p>
         )}
         <div className="mt-5">
           {count >= data.requiredCount! ? (
@@ -98,7 +96,7 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
             </Button>
           ) : (
             <Button className="mt-5 w-full" disabled>
-              You need to collect {data.requiredCount} stamp cards <Lock className="ml-2 h-4 w-4" />
+              You need to collect {data.requiredCount} NFT coupons <Lock className="ml-2 h-4 w-4" />
             </Button>
           )}
         </div>

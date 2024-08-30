@@ -45,7 +45,7 @@ const page = async () => {
       <div className="mt-10 grid grid-cols-3 gap-6">
         {rewardPrograms.map(({ icon: Icon, ...program }) => (
           <Link href={route.concat(`?type=${program.type}`)}>
-            <div className="cursor-pointer rounded-lg border border-gray-500 p-6 shadow-md transition-all duration-150 hover:border-green-400 hover:bg-black/95">
+            <div className="h-full cursor-pointer rounded-lg border border-gray-500 p-6 shadow-md transition-all duration-150 hover:border-green-400 hover:bg-black/95">
               <Icon className="mb-4 h-12 w-12" />
               <h3 className="text-2xl">{program.title}</h3>
               <p className="mt-2 text-gray-400">{program.description}</p>
