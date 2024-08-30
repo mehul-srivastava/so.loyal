@@ -70,15 +70,15 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
   return (
     <Card>
       <CardHeader>
-        <CardTitle>NFT Coupons</CardTitle>
-        <CardDescription>Get an NFT coupon that you can show-off to your friends. You can unlock a freebie after every X purchases.</CardDescription>
+        <CardTitle>SLC Tokens</CardTitle>
+        <CardDescription>Get an SLC token that you can show-off to your friends. You can unlock a freebie after every X purchases.</CardDescription>
       </CardHeader>
       <CardContent>
         {count <= 0 && (
           <div className="flex items-center justify-center gap-x-4">
             <p className="text-6xl">😞</p>
             <div className="text-gray-500">
-              <p>You haven't unlocked any coupons yet.</p>
+              <p>You haven't unlocked any tokens yet.</p>
               <p>Please make a purchase to unlock one</p>
             </div>
           </div>
@@ -86,7 +86,7 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
 
         {count > 0 && (
           <p className="px-4 text-sm text-gray-700">
-            You have {count} minted NFT coupon{count > 1 && "s"} in your wallet. You still need {data.requiredCount! - count} to enable a freebie.
+            You have {count} SLC token{count > 1 && "s"} in your wallet. You still need {data.requiredCount! - count} to enable a freebie.
           </p>
         )}
         <div className="mt-5">
@@ -96,7 +96,7 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
             </Button>
           ) : (
             <Button className="mt-5 w-full" disabled>
-              You need to collect {data.requiredCount} NFT coupons <Lock className="ml-2 h-4 w-4" />
+              You need to collect {data.requiredCount} SLC tokens <Lock className="ml-2 h-4 w-4" />
             </Button>
           )}
         </div>

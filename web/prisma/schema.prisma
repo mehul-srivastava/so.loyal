@@ -14,27 +14,29 @@ datasource db {
 }
 
 model Merchant {
-  id                  String   @id
+  id                  String  @id
   websiteName         String
-  websiteLink         String   @unique
-  walletPublicAddress String   @unique
+  websiteLink         String  @unique
+  walletPublicAddress String  @unique
   supportPhone        String
   supportEmail        String
   brandColor          String
   brandImage          String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  Pages               Page[]   @relation("Page")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Pages     Page[]   @relation("Page")
 }
 
 model Page {
-  id               String   @id
+  id               String @id
   merchantId       String
   programPublicKey String
   type             String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  Orders           Order[]  @relation("Order")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Orders    Order[]  @relation("Order")
 
   merchant Merchant @relation("Page", fields: [merchantId], references: [id])
 
@@ -43,14 +45,15 @@ model Page {
 
 model Order {
   id                Int      @id @default(autoincrement())
-  merchantId        String // this merchant id is actually the brandName
-  pageId            String // this page is the `slug` or `id`
+  merchantId        String
+  pageId            String
   customerPublicKey String
   orderPublicKey    String?  @unique
-  amount            Decimal?
+  amount            Decimal? // Don't remove this, chart takes ages to load
   status            String   @default("PENDING")
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   page Page @relation("Order", fields: [pageId], references: [id])
 }

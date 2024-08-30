@@ -108,7 +108,7 @@ const OnboardingForm = () => {
             render={({ field }) => (
               <FormItem className="col-span-12">
                 <FormLabel>
-                  Wallet's Public Address <small>(Make sure you have enough SOL)</small>
+                  Wallet's Public Address <small>(Use devnet, ensure enough SOL)</small>
                 </FormLabel>
                 <FormControl>
                   <Input autoComplete="off" placeholder="0x76d3047740Cf71400DcfF74AbeA12eC834ff5035" {...field} />

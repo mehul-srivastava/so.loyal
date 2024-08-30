@@ -12,9 +12,9 @@ const rewardPrograms = [
     icon: Gift,
   },
   {
-    title: "NFT Rewards",
+    title: "SLC Tokens",
     type: "nft",
-    description: "Products come with a unique NFT versions of them which is automatically added to the user's wallet on checkout.",
+    description: "Products come with a unique SLC token which is automatically added to the user's wallet on checkout.",
     icon: WalletCards,
   },
 ];

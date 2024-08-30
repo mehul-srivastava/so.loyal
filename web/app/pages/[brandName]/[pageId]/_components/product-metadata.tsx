@@ -8,6 +8,7 @@ import { Merchant } from "@prisma/client";
 import { getStampsProgram } from "@/anchor/stamps_pages/setup";
 import { getNftsProgram } from "@/anchor/nfts_pages/setup";
 import StampRewardDescription from "./stamp-reward-description";
+import NftRewardDescription from "./nft-reward-description";
 
 interface IProductMetadata {
   type: string;
@@ -19,7 +20,7 @@ interface IContractData {
   title: string;
   description: string;
   stampCount?: number;
-  pointCount?: number;
+  nftCount?: number;
   price: number;
   image: string;
 }
@@ -80,7 +81,7 @@ const ProductMetadata = ({ type, programPublicKey, merchant }: IProductMetadata)
           </div>
           <div className="mt-4">
             {type === "stamp" && <StampRewardDescription stampCount={data?.stampCount} />}
-            {/* {type === "nft" && <PointRewardDescription pointCount={data.pointCount} />} */}
+            {type === "nft" && <NftRewardDescription nftCount={data?.nftCount} />}
           </div>
           <div className="mt-4">
             <h4 className="text-xl font-semibold">Contact Us</h4>
