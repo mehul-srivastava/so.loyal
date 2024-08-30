@@ -2,18 +2,17 @@
 
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useRouter } from "next/navigation";
+import { findReference } from "@solana/pay";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getStampsProgram } from "@/anchor/stamps/setup";
+import { getStampsProgram } from "@/anchor/stamps_pages/setup";
 import { ConnectThirdPartyWalletButton } from "@/components/ConnectWalletButton";
-import { findReference, FindReferenceError } from "@solana/pay";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { Prisma } from "@prisma/client";
 
 interface IProductPayment {
   programPublicKey: string;

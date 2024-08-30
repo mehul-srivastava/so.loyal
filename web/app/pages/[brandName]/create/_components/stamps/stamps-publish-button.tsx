@@ -23,7 +23,7 @@ import {
   type IPaymentPageDataContext,
   PaymentPageDataContext,
 } from "@/components/providers/payment-page-context-provider";
-import { getStampsProgram } from "@/anchor/stamps/setup";
+import { getStampsProgram } from "@/anchor/stamps_pages/setup";
 
 type IStampsPublishButton = {
   params: { brandName: string };

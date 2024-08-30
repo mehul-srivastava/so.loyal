@@ -1,10 +1,12 @@
 "use client";
 
-import { getStampsProgram } from "@/anchor/stamps/setup";
-import { Merchant } from "@prisma/client";
+import React, { useEffect, useState } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Merchant } from "@prisma/client";
+
+import { getStampsProgram } from "@/anchor/stamps_pages/setup";
+import StampRewardDescription from "./stamp-reward-description";
 
 interface IProductMetadata {
   type: string;
@@ -72,9 +74,7 @@ const ProductMetadata = ({ type, programPublicKey, merchant }: IProductMetadata)
             </div>
           </div>
           <div className="mt-4">
-            {/* {page.type === "stamps" && (
-                    <StampRewardDescription stampCount={data?.stampCount} />
-                  )} */}
+            {type === "stamps" && <StampRewardDescription stampCount={data?.stampCount} />}
             {/* {page.type === "points" && <PointRewardDescription pointCount={data.pointCount} />} */}
           </div>
           <div className="mt-4">

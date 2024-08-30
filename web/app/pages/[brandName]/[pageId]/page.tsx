@@ -1,14 +1,11 @@
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { PublicKey } from "@solana/web3.js";
-import { Loader2 } from "lucide-react";
 
-import StampRewardDescription from "./_components/stamp-reward-description";
-import StampRewardCard from "./_components/stamp-reward-card";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ConnectThirdPartyWalletButton } from "@/components/ConnectWalletButton";
+
+import StampRewardCard from "./_components/stamp-reward-card";
 import ProductMetadata from "./_components/product-metadata";
-import ProductPayment from "./_components/stamp-reward-payment";
 import StampRewardPayment from "./_components/stamp-reward-payment";
 
 interface IPageProps {
