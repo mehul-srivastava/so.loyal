@@ -3,7 +3,7 @@ import { Program } from "@coral-xyz/anchor";
 import { PointsPage } from "../target/types/points_page";
 import { Keypair } from "@solana/web3.js";
 
-describe("Stamp Pages", () => {
+describe("Point Pages", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 

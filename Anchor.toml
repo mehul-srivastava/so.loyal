@@ -7,10 +7,12 @@ skip-lint = false
 [programs.localnet]
 points_page = "7ibPg4fmTEjLufBX4vFUK2ZsG9emD5bGLqnZmfFayKGx"
 stamps_page = "CpPqrUDwBuh7HJCPfqMEg9VeVnnuiqvQnsGfZSbuc48y"
+stamps_history = "47RVTDVSkuTeiqPHEEWWnMxQwQpEefNNJA8ztPbwcvTQ"
 
 [programs.devnet]
 points_page = "7ibPg4fmTEjLufBX4vFUK2ZsG9emD5bGLqnZmfFayKGx"
 stamps_page = "CpPqrUDwBuh7HJCPfqMEg9VeVnnuiqvQnsGfZSbuc48y"
+stamps_history = "47RVTDVSkuTeiqPHEEWWnMxQwQpEefNNJA8ztPbwcvTQ"
 
 [registry]
 url = "https://api.apr.dev"

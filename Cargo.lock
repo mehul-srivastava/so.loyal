@@ -1520,6 +1520,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stamps_history"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+]
+
+[[package]]
 name = "stamps_page"
 version = "0.1.0"
 dependencies = [
