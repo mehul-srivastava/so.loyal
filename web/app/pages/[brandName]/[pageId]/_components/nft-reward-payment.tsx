@@ -8,7 +8,7 @@ import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { findReference } from "@solana/pay";
 import { percentAmount, generateSigner, signerIdentity, createSignerFromKeypair } from "@metaplex-foundation/umi";
-import { TokenStandard, createAndMint, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { TokenStandard, burnV1, createAndMint, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 
 import secret from "@/secret.json";
@@ -40,7 +40,7 @@ interface IContractData {
 }
 
 const metadata = {
-  name: "Soloyal Coupons",
+  name: "Soloyal Coupon",
   symbol: "SLC",
   uri: "https://gist.githubusercontent.com/mehul-srivastava/edcc3207a270f176def355760b4cf877/raw/e5e76db7538e4dee2c8e7bd45ed40e681d7df6c0/token.json",
 };
@@ -63,6 +63,39 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
     }),
     [customerWallet.publicKey, data],
   );
+
+  const umi = createUmi("https://api.devnet.solana.com");
+  const userWallet = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(secret));
+  const userWalletSigner = createSignerFromKeypair(umi, userWallet);
+  const mint = generateSigner(umi);
+
+  async function receiveTokens(txResponse: any, txHash: any) {
+    await new Promise(async (resolve, reject) => {
+      umi.use(signerIdentity(userWalletSigner));
+      umi.use(mplTokenMetadata());
+
+      console.log(mint, userWalletSigner, userWallet);
+
+      try {
+        await createAndMint(umi, {
+          mint,
+          authority: umi.identity,
+          name: metadata.name,
+          symbol: metadata.symbol,
+          uri: metadata.uri,
+          sellerFeeBasisPoints: percentAmount(0),
+          decimals: 8,
+          amount: 1_00000000,
+          tokenOwner: customerWallet.publicKey! as any,
+          tokenStandard: TokenStandard.Fungible,
+        }).sendAndConfirm(umi);
+
+        resolve("response");
+      } catch (error) {
+        reject("error");
+      }
+    });
+  }
 
   async function getNftsData() {
     const program = getNftsProgram("" as any);
@@ -100,8 +133,11 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
       });
 
       showStamps();
-      toast.success("Your purchase was successful!");
-      setTimeout(() => window.location.reload(), 2000);
+      toast.promise(receiveTokens(txResponse, txHash), {
+        loading: "Confirming Transaction...",
+        success: "You received 1 SLC Coupon!",
+        error: "Something went wrong!",
+      });
     } catch (error) {
       toast.error("Something went wrong!");
       console.error(error);

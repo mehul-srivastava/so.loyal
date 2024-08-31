@@ -41,7 +41,6 @@ const ProductMetadata = ({ type, programPublicKey, merchant }: IProductMetadata)
     const program = getNftsProgram("" as any);
     const publicKey = new PublicKey(programPublicKey);
     const data = await program.account.nftsPage.fetch(publicKey);
-    console.log(data);
     setData(data);
     setLoading(false);
   }

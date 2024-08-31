@@ -4,19 +4,13 @@ import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
-import Image from "next/image";
 import axios from "axios";
-import { percentAmount, generateSigner, signerIdentity, createSignerFromKeypair } from "@metaplex-foundation/umi";
-import { TokenStandard, createAndMint, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 
 import { Loader2, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { IPaymentPageCustomerContext, PaymentPageCustomerContext } from "@/components/providers/payment-page-customer-provider";
 import { getNftsProgram } from "@/anchor/nfts_pages/setup";
-
-import secret from "@/secret.json";
 
 interface IStampRewardCardProps {
   websiteName: string;
@@ -31,44 +25,6 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
   const [isLoading, setIsLoading] = useState(false);
 
   const { publicKey, connected } = useWallet();
-
-  async function addSLCTokenToWallet() {
-    const umi = createUmi("https://api.devnet.solana.com");
-
-    const userWallet = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(secret));
-    const userWalletSigner = createSignerFromKeypair(umi, userWallet);
-
-    const metadata = {
-      name: "Soloyal Coupons",
-      symbol: "SLC",
-      uri: "https://gist.githubusercontent.com/mehul-srivastava/edcc3207a270f176def355760b4cf877/raw/e5e76db7538e4dee2c8e7bd45ed40e681d7df6c0/token.json",
-    };
-
-    const mint = generateSigner(umi);
-    umi.use(signerIdentity(userWalletSigner));
-    umi.use(mplTokenMetadata());
-
-    createAndMint(umi, {
-      mint,
-      authority: umi.identity,
-      name: metadata.name,
-      symbol: metadata.symbol,
-      uri: metadata.uri,
-      sellerFeeBasisPoints: percentAmount(0),
-      decimals: 8,
-      amount: 900000,
-      tokenOwner: publicKey! as any,
-      tokenStandard: TokenStandard.Fungible,
-    })
-      .sendAndConfirm(umi)
-      .then(() => {
-        toast.success("SLC Token added to wallet!");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Something went wrong!");
-      });
-  }
 
   async function getNftsRequiredCount() {
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -97,7 +53,6 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
       });
 
       toast.success("Paid successfully using coupons!");
-      addSLCTokenToWallet();
       appendData({ count: data.count! - data.requiredCount! });
     } catch (error) {
       console.log(error);
@@ -130,7 +85,7 @@ const StampRewardCard = ({ websiteName, programPublicKey, pageId }: IStampReward
 
         {count > 0 && (
           <p className="px-4 text-sm text-gray-700">
-            You have {count} SLC token{count > 1 && "s"} in your wallet. You still need {data.requiredCount! - count} to enable a freebie.
+            You have {count} SLC token{count > 1 && "s"} in your wallet. You still need {Math.min(0, data.requiredCount! - count)} to enable a freebie.
           </p>
         )}
         <div className="mt-5">
