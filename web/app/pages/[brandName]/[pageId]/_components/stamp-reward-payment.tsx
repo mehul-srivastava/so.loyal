@@ -143,7 +143,7 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
       <small>Product Price</small>
       <Input value={`SOL ${data?.price!.toFixed(8).replace(/0+$/, "")}`} disabled readOnly className="bg-gray-300" />
       <Button className="mt-4 w-full disabled:pointer-events-none disabled:select-none disabled:opacity-40" variant={"secondary"} disabled={isRunningTransaction} onClick={processTransaction}>
-        Pay with Solana {isRunningTransaction && <Loader2 className="ml-2 animate-spin" size={14} />}
+        Pay Solana {isRunningTransaction && <Loader2 className="ml-2 animate-spin" size={14} />}
       </Button>
     </>
   );

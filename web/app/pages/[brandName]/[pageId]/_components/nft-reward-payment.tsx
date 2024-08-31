@@ -7,12 +7,17 @@ import { Loader2 } from "lucide-react";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { findReference } from "@solana/pay";
+import { percentAmount, generateSigner, signerIdentity, createSignerFromKeypair } from "@metaplex-foundation/umi";
+import { TokenStandard, createAndMint, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+
+import secret from "@/secret.json";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ConnectThirdPartyWalletButton } from "@/components/ConnectWalletButton";
-import { IPaymentPageCustomerContext, PaymentPageCustomerContext } from "@/components/providers/payment-page-customer-provider";
 import { getNftsProgram } from "@/anchor/nfts_pages/setup";
+import { IPaymentPageCustomerContext, PaymentPageCustomerContext } from "@/components/providers/payment-page-customer-provider";
 
 interface IProductPayment {
   programPublicKey: string;
@@ -33,6 +38,12 @@ interface IContractData {
   price: number;
   image: string;
 }
+
+const metadata = {
+  name: "Soloyal Coupons",
+  symbol: "SLC",
+  uri: "https://gist.githubusercontent.com/mehul-srivastava/edcc3207a270f176def355760b4cf877/raw/e5e76db7538e4dee2c8e7bd45ed40e681d7df6c0/token.json",
+};
 
 const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, merchantId, merchantWebsiteName }: IProductPayment) => {
   const [data, setData] = useState<IContractData>();
@@ -143,7 +154,7 @@ const StampRewardPayment = ({ programPublicKey, params, merchantWalletAddress, m
       <small>Product Price</small>
       <Input value={`SOL ${data?.price!.toFixed(8).replace(/0+$/, "")}`} disabled readOnly className="bg-gray-300" />
       <Button className="mt-4 w-full disabled:pointer-events-none disabled:select-none disabled:opacity-40" variant={"secondary"} disabled={isRunningTransaction} onClick={processTransaction}>
-        Pay with Solana {isRunningTransaction && <Loader2 className="ml-2 animate-spin" size={14} />}
+        Pay Solana {isRunningTransaction && <Loader2 className="ml-2 animate-spin" size={14} />}
       </Button>
     </>
   );

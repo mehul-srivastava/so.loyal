@@ -15,11 +15,11 @@ const NftsInputDescription = () => {
     <div>
       <p>
         <span className="underline">LOYALTY PROGRAM:</span> Introducing our new loyalty rewards program using SLC (Soloyal Coupon) Tokens! With each purchase, you will receive SLC Tokens directly to
-        your wallet. These tokens can then be combined to redeem exclusive perks and discounts on future purchases from the same merchant. Say goodbye to traditional loyalty cards and welcome a
-        modern, efficient way to earn and redeem rewards. Start earning SLC Tokens today and enjoy seamless tracking of your loyalty rewards!
+        your wallet which can be combined to redeem exclusive perks and discounts on future purchases from the same merchant. Start earning SLC Tokens today and enjoy seamless tracking of your loyalty
+        rewards!
       </p>
       <div className="mt-4">
-        <Input type="number" max={15} min={1} onChange={handler} name="nft" className="border border-gray-300 bg-white" placeholder="Enter no. of coupons to unlock a freebie (e.g. 4)" />
+        <Input type="number" max={15} min={1} onChange={handler} name="nft_count" className="border border-gray-300 bg-white" placeholder="Enter no. of coupons to unlock a freebie (e.g. 4)" />
       </div>
     </div>
   );

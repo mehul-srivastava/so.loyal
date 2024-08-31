@@ -62,7 +62,7 @@ const NftsPublishButton = ({ params, searchParams }: INftsPublishButtonProps) =>
     const program = getNftsProgram(wallet!); // #2: This is the program object which contains all the methods
 
     const txnSignature = await program.methods
-      .initializePage(data.title!, data.description!, data.price!, data.nft_count!, "https://img.freepik.com/free-photo/delicious-coffee-beans-cup_23-2150691429.jpg")
+      .initializePage(data.title!, data.description!, data.price!, data.nft_count!, "https://raw.githubusercontent.com/mehul-srivastava/so.loyal/main/web/public/placeholder.png")
       .accounts({
         pageAccount: account.publicKey, // #3: Page account is basically the owner of this payment page as mentioned in #1
         user: publicKey!, // #4: Use wallet's public key because the end-user is going to pay the gas fee

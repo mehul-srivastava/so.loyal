@@ -32,6 +32,7 @@ const PaymentPageDataProvider = ({ children }: { children: React.ReactNode }) =>
       ...data,
       ...newData,
     }));
+    console.log(data);
   }
 
   return <PaymentPageDataContext.Provider value={{ data, appendData }}>{children}</PaymentPageDataContext.Provider>;

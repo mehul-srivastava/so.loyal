@@ -52,7 +52,7 @@ const LeftMetadata = ({ borderStyles, merchant }: { borderStyles: React.CSSPrope
             alt="Product Image"
             width={600}
             height={400}
-            className="aspect-[4/3] w-full overflow-hidden rounded-lg border object-cover"
+            className="aspect-[4/2] w-full overflow-hidden rounded-lg border object-cover"
           />
         </div>
       </div>
